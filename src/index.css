@@ -16,7 +16,15 @@
 :root {
   color: #d7e2ea;
   background: #0c0c0c;
-  font-family: 'Kanit', sans-serif;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    Arial,
+    sans-serif;
   font-synthesis: none;
   text-rendering: geometricPrecision;
 }
@@ -63,7 +71,15 @@ img {
   background:
     radial-gradient(circle at 50% 4%, rgba(182, 0, 168, 0.18), transparent 28rem),
     #0c0c0c;
-  font-family: 'Kanit', sans-serif;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    Arial,
+    sans-serif;
 }
 
 .gradient-heading,
@@ -587,7 +603,15 @@ img {
     radial-gradient(circle at 18% 24%, rgba(118, 33, 176, 0.18), transparent 34rem),
     #0c0c0c;
   color: #d7e2ea;
-  font-family: 'Kanit', sans-serif;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    Arial,
+    sans-serif;
 }
 
 .case-detail-shell-efund {
@@ -864,7 +888,15 @@ img {
     #02070d;
   background-size: 18px 18px;
   color: var(--efund-ink);
-  font-family: 'Kanit', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    Arial,
+    sans-serif;
 }
 
 .efund-case-shell::before {
@@ -1066,7 +1098,7 @@ img {
 
 .efund-module-item span {
   color: var(--efund-yellow);
-  font-family: 'Press Start 2P', 'Kanit', sans-serif;
+  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
   font-size: 0.72rem;
 }
 
@@ -1155,7 +1187,7 @@ img {
 
 .efund-color-token strong {
   color: var(--efund-ink);
-  font-family: 'Press Start 2P', 'Kanit', sans-serif;
+  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
   font-size: clamp(0.8rem, 1.2vw, 1rem);
 }
 
@@ -1188,7 +1220,7 @@ img {
 
 .efund-slide-card span {
   color: var(--efund-yellow);
-  font-family: 'Press Start 2P', 'Kanit', sans-serif;
+  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
   font-size: 0.68rem;
 }
 

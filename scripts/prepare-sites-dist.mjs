@@ -1,4 +1,4 @@
-import { cp, mkdir, rm } from 'node:fs/promises';
+import { cp, mkdir, readdir, rm, unlink } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -23,3 +23,24 @@ await cp(
   path.join(rootDir, '.openai', 'hosting.json'),
   path.join(distDir, '.openai', 'hosting.json'),
 );
+
+await removeSystemFiles(distDir);
+
+async function removeSystemFiles(directory) {
+  const entries = await readdir(directory, { withFileTypes: true });
+
+  await Promise.all(
+    entries.map(async (entry) => {
+      const entryPath = path.join(directory, entry.name);
+
+      if (entry.name === '.DS_Store') {
+        await unlink(entryPath);
+        return;
+      }
+
+      if (entry.isDirectory()) {
+        await removeSystemFiles(entryPath);
+      }
+    }),
+  );
+}
