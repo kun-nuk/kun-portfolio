@@ -55,6 +55,14 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
+button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
+
 img {
   display: block;
   max-width: 100%;
@@ -225,6 +233,7 @@ img {
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
+  border: 0;
   border-radius: 999px;
   outline: 2px solid #ffffff;
   outline-offset: -3px;
@@ -246,6 +255,134 @@ img {
 .contact-button:hover {
   transform: translateY(-2px);
   filter: brightness(1.08);
+}
+
+.contact-button:focus-visible,
+.contact-modal button:focus-visible,
+.case-contact-link:focus-visible,
+.footer button:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 4px;
+}
+
+.contact-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(14px);
+}
+
+.contact-modal {
+  position: relative;
+  width: min(100%, 520px);
+  overflow: hidden;
+  border: 1px solid rgba(215, 226, 234, 0.44);
+  border-radius: 8px;
+  padding: clamp(1.4rem, 4vw, 2rem);
+  background:
+    radial-gradient(circle at 92% 2%, rgba(182, 0, 168, 0.26), transparent 16rem),
+    radial-gradient(circle at 0% 100%, rgba(118, 33, 176, 0.22), transparent 18rem),
+    #0c0c0c;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.54);
+  color: #d7e2ea;
+}
+
+.contact-modal-close {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.8rem;
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  border: 1px solid rgba(215, 226, 234, 0.3);
+  border-radius: 999px;
+  color: #ffffff;
+  font-size: 1.4rem;
+  line-height: 1;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.contact-modal-close:hover {
+  border-color: #ffffff;
+  background: rgba(215, 226, 234, 0.1);
+}
+
+.contact-modal-kicker {
+  margin-bottom: 0.65rem;
+  color: #bbccd7;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.contact-modal h2 {
+  margin-bottom: 1.45rem;
+  color: #ffffff;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.contact-info-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.contact-info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid rgba(215, 226, 234, 0.18);
+  border-radius: 8px;
+  padding: 0.95rem;
+  background: rgba(215, 226, 234, 0.06);
+}
+
+.contact-info-row div {
+  display: grid;
+  min-width: 0;
+  gap: 0.28rem;
+}
+
+.contact-info-row span {
+  color: rgba(215, 226, 234, 0.66);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.contact-info-row strong {
+  overflow-wrap: anywhere;
+  color: #ffffff;
+  font-size: clamp(1rem, 2.2vw, 1.18rem);
+  font-weight: 700;
+}
+
+.contact-info-row button {
+  flex: 0 0 auto;
+  border: 1px solid rgba(215, 226, 234, 0.35);
+  border-radius: 999px;
+  padding: 0.52rem 0.86rem;
+  color: #d7e2ea;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.contact-info-row button:hover {
+  border-color: #ffffff;
+  background: rgba(215, 226, 234, 0.1);
 }
 
 .marquee-section {
@@ -591,7 +728,15 @@ img {
   transition: opacity 180ms ease;
 }
 
-.footer a:hover {
+.footer button {
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  transition: opacity 180ms ease;
+}
+
+.footer a:hover,
+.footer button:hover {
   opacity: 0.72;
 }
 
@@ -639,6 +784,7 @@ img {
 
 .case-detail-nav a,
 .case-detail-footer a,
+.case-contact-link,
 .not-found-section a {
   display: inline-flex;
   align-items: center;
@@ -653,6 +799,7 @@ img {
 
 .case-detail-nav a:hover,
 .case-detail-footer a:hover,
+.case-contact-link:hover,
 .not-found-section a:hover {
   border-color: #ffffff;
   background: rgba(215, 226, 234, 0.1);
@@ -1406,6 +1553,7 @@ img {
 
   .case-detail-nav a,
   .case-detail-footer a,
+  .case-contact-link,
   .not-found-section a {
     padding: 0.66rem 0.82rem;
   }

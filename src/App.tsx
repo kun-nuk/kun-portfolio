@@ -10,6 +10,13 @@ function assetUrl(path: string) {
 }
 
 const portraitUrl = assetUrl('assets/kun-avatar-transparent.png');
+const launchScreenUrl = assetUrl('assets/projects/efundgpt-app/launch-screen.png');
+
+const contactDetails = [
+  { label: '微信', value: 'KunnnnuK' },
+  { label: '电话', value: '13450491082' },
+  { label: '邮箱', value: '543827446@qq.com' },
+];
 
 const marqueeImages = [
   assetUrl('assets/projects/efundgpt-app/home-cover.png'),
@@ -26,7 +33,7 @@ const marqueeImages = [
   assetUrl('assets/efundgpt/page-3.png'),
   assetUrl('assets/projects/efundgpt-app/home-interface.png'),
   assetUrl('assets/projects/efundgpt-app/home-detail.png'),
-  assetUrl('assets/projects/efund-platform/cover-1.webp'),
+  launchScreenUrl,
   assetUrl('assets/projects/efund-platform/cover-2.webp'),
   assetUrl('assets/projects/solaris-digital/cover-1.webp'),
   assetUrl('assets/projects/solaris-digital/cover-2.webp'),
@@ -102,7 +109,7 @@ const projects: Project[] = [
     year: '2026',
     scope: ['App Design', 'AI Experience', 'Finance UI'],
     coverImages: [
-      assetUrl('assets/projects/efundgpt-app/home-detail.png'),
+      launchScreenUrl,
       assetUrl('assets/projects/efundgpt-app/home-interface.png'),
       assetUrl('assets/projects/efundgpt-app/home-cover.png'),
     ],
@@ -183,11 +190,111 @@ function FadeIn({ children, className = '', delay = 0 }: FadeInProps) {
   );
 }
 
-function ContactButton() {
+type ContactButtonProps = {
+  children?: ReactNode;
+  className?: string;
+  onOpenContact: () => void;
+};
+
+function ContactButton({ children = 'Contact Me', className = '', onOpenContact }: ContactButtonProps) {
   return (
-    <a className="contact-button" href="mailto:hello@kun.studio">
-      Contact Me
-    </a>
+    <button className={`contact-button${className ? ` ${className}` : ''}`} type="button" onClick={onOpenContact}>
+      {children}
+    </button>
+  );
+}
+
+type ContactModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+function ContactModal({ isOpen, onClose }: ContactModalProps) {
+  const [copiedLabel, setCopiedLabel] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+    const originalOverflow = document.body.style.overflow;
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) {
+    return null;
+  }
+
+  const copyValue = async (label: string, value: string) => {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(value);
+      } else {
+        const field = document.createElement('textarea');
+        field.value = value;
+        field.setAttribute('readonly', '');
+        field.style.position = 'fixed';
+        field.style.opacity = '0';
+        document.body.appendChild(field);
+        field.select();
+        document.execCommand('copy');
+        document.body.removeChild(field);
+      }
+
+      setCopiedLabel(label);
+      window.setTimeout(() => setCopiedLabel(null), 1600);
+    } catch {
+      setCopiedLabel(null);
+    }
+  };
+
+  return (
+    <div
+      className="contact-modal-backdrop"
+      role="presentation"
+      onClick={onClose}
+    >
+      <div
+        aria-labelledby="contact-modal-title"
+        aria-modal="true"
+        className="contact-modal"
+        role="dialog"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <button className="contact-modal-close" type="button" aria-label="关闭联系方式弹窗" onClick={onClose}>
+          ×
+        </button>
+
+        <p className="contact-modal-kicker">Contact KUN</p>
+        <h2 id="contact-modal-title">联系方式</h2>
+
+        <div className="contact-info-list">
+          {contactDetails.map((item) => (
+            <div className="contact-info-row" key={item.label}>
+              <div>
+                <span>{item.label}</span>
+                <strong>{item.value}</strong>
+              </div>
+              <button type="button" onClick={() => copyValue(item.label, item.value)}>
+                {copiedLabel === item.label ? '已复制' : '复制'}
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -359,7 +466,7 @@ function MagneticPortrait({ portraitMotionRef, portraitRef }: MagneticPortraitPr
   );
 }
 
-function HeroSection() {
+function HeroSection({ onOpenContact }: { onOpenContact: () => void }) {
   const { dotFieldRef, portraitMotionRef, portraitRef } = useHeroMagnet();
 
   return (
@@ -396,7 +503,7 @@ function HeroSection() {
 
       <div className="hero-bottom">
         <p>UX/UI Designer</p>
-        <ContactButton />
+        <ContactButton onOpenContact={onOpenContact} />
       </div>
     </section>
   );
@@ -436,7 +543,7 @@ function MarqueeRow({ images, direction }: MarqueeRowProps) {
   );
 }
 
-function AboutSection() {
+function AboutSection({ onOpenContact }: { onOpenContact: () => void }) {
   return (
     <section className="about-section" id="about">
       {decorations.map((item) => (
@@ -452,9 +559,9 @@ function AboutSection() {
       <FadeIn className="about-content">
         <h2 className="section-heading gradient-heading">About me</h2>
         <p>
-          我拥有六年以上设计经验，专注于 App、网页设计与用户体验。我很享受与希望脱颖而出、展现最佳形象的企业合作。让我们一起创造令人惊喜的作品！
+          哈喽，你好呀～～我拥有六年以上设计经验，专注于 App、网页设计与用户体验。我很享受与希望脱颖而出、展现最佳形象的企业合作。让我们一起创造令人惊喜的作品！
         </p>
-        <ContactButton />
+        <ContactButton onOpenContact={onOpenContact} />
       </FadeIn>
     </section>
   );
@@ -530,23 +637,23 @@ function ProjectsSection() {
   );
 }
 
-function Footer() {
+function Footer({ onOpenContact }: { onOpenContact: () => void }) {
   return (
     <footer className="footer" id="contact">
-      <a href="mailto:hello@kun.studio">hello@kun.studio</a>
+      <button type="button" onClick={onOpenContact}>Contact Me</button>
     </footer>
   );
 }
 
-function HomePage() {
+function HomePage({ onOpenContact }: { onOpenContact: () => void }) {
   return (
     <main className="site-shell">
-      <HeroSection />
+      <HeroSection onOpenContact={onOpenContact} />
       <MarqueeSection />
-      <AboutSection />
+      <AboutSection onOpenContact={onOpenContact} />
       <ServicesSection />
       <ProjectsSection />
-      <Footer />
+      <Footer onOpenContact={onOpenContact} />
     </main>
   );
 }
@@ -577,7 +684,7 @@ function useRouteLocation() {
   return route;
 }
 
-function ProjectDetailPage({ project }: { project: Project }) {
+function ProjectDetailPage({ onOpenContact, project }: { onOpenContact: () => void; project: Project }) {
   const isEfundProject = project.slug === 'efundgpt-app';
 
   return (
@@ -590,7 +697,9 @@ function ProjectDetailPage({ project }: { project: Project }) {
           >
             KUN Portfolio
           </a>
-          <a href="mailto:hello@kun.studio">Contact</a>
+          <button className="case-contact-link" type="button" onClick={onOpenContact}>
+            Contact
+          </button>
         </nav>
 
         {isEfundProject ? (
@@ -667,7 +776,9 @@ function ProjectDetailPage({ project }: { project: Project }) {
         >
           Back to Projects
         </a>
-        <a href="mailto:hello@kun.studio">Contact Me</a>
+        <button className="case-contact-link" type="button" onClick={onOpenContact}>
+          Contact Me
+        </button>
       </footer>
     </main>
   );
@@ -692,23 +803,33 @@ function NotFoundPage() {
 
 export default function App() {
   const route = useRouteLocation();
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const hashProjectSlug = route.hash.match(/^#\/projects\/([^/]+)\/?$/)?.[1];
   const projectSlug = hashProjectSlug ?? route.pathname.match(/^\/projects\/([^/]+)\/?$/)?.[1];
   const project = projects.find((item) => item.slug === projectSlug);
   const isHomePath = route.pathname === '/' || route.pathname.endsWith('/index.html');
   const isFileHomePath = isFileBuild() && !hashProjectSlug;
+  const openContactModal = () => setIsContactModalOpen(true);
+  const closeContactModal = () => setIsContactModalOpen(false);
 
   useEffect(() => {
     document.title = project ? `${project.name} -- KUN Portfolio` : 'KUN -- UX/UI Designer';
   }, [project]);
 
+  let page: ReactNode;
+
   if ((isHomePath || isFileHomePath) && !hashProjectSlug) {
-    return <HomePage />;
+    page = <HomePage onOpenContact={openContactModal} />;
+  } else if (project) {
+    page = <ProjectDetailPage onOpenContact={openContactModal} project={project} />;
+  } else {
+    page = <NotFoundPage />;
   }
 
-  if (project) {
-    return <ProjectDetailPage project={project} />;
-  }
-
-  return <NotFoundPage />;
+  return (
+    <>
+      {page}
+      <ContactModal isOpen={isContactModalOpen} onClose={closeContactModal} />
+    </>
+  );
 }
