@@ -274,16 +274,20 @@ function ContactModal({ isOpen, onClose }: ContactModalProps) {
         onClick={(event) => event.stopPropagation()}
       >
         <button className="contact-modal-close" type="button" aria-label="关闭联系方式弹窗" onClick={onClose}>
-          ×
+          Close
         </button>
 
         <p className="contact-modal-kicker">Contact KUN</p>
-        <h2 id="contact-modal-title">联系方式</h2>
+        <div className="contact-modal-title-row">
+          <h2 id="contact-modal-title">Contact</h2>
+          <p>联系方式</p>
+        </div>
 
         <div className="contact-info-list">
-          {contactDetails.map((item) => (
+          {contactDetails.map((item, index) => (
             <div className="contact-info-row" key={item.label}>
-              <div>
+              <span className="contact-info-number">{String(index + 1).padStart(2, '0')}</span>
+              <div className="contact-info-copy">
                 <span>{item.label}</span>
                 <strong>{item.value}</strong>
               </div>

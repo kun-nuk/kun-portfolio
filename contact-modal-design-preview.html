@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KUN Contact Modal Design Preview</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        color: #d7e2ea;
+        background: #0c0c0c;
+        font-family:
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          "PingFang SC",
+          "Hiragino Sans GB",
+          "Microsoft YaHei",
+          Arial,
+          sans-serif;
+        font-synthesis: none;
+        text-rendering: geometricPrecision;
+      }
+
+      body {
+        min-width: 320px;
+        min-height: 100vh;
+        overflow: hidden;
+        background: #0c0c0c;
+      }
+
+      button {
+        border: 0;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+      }
+
+      .preview-stage {
+        position: relative;
+        display: grid;
+        min-height: 100vh;
+        place-items: center;
+        overflow: hidden;
+        padding: 40px;
+        background:
+          linear-gradient(rgba(187, 204, 215, 0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(187, 204, 215, 0.035) 1px, transparent 1px),
+          radial-gradient(circle at 52% 20%, rgba(187, 204, 215, 0.1), transparent 34rem),
+          #0c0c0c;
+        background-size: 18px 18px, 18px 18px, auto, auto;
+      }
+
+      .page-ghost {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        filter: blur(10px);
+        opacity: 0.44;
+        transform: scale(1.03);
+        pointer-events: none;
+      }
+
+      .ghost-title {
+        position: absolute;
+        top: 52px;
+        left: 50%;
+        width: 120vw;
+        transform: translateX(-50%);
+        background: linear-gradient(180deg, #646973 0%, #bbccd7 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        -webkit-text-fill-color: transparent;
+        font-size: clamp(96px, 14vw, 220px);
+        font-weight: 900;
+        line-height: 0.82;
+        text-align: center;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .ghost-portrait {
+        position: absolute;
+        top: 116px;
+        left: 50%;
+        width: min(38vw, 430px);
+        min-width: 320px;
+        transform: translateX(-50%);
+      }
+
+      .ghost-portrait img {
+        width: 100%;
+        filter: drop-shadow(0 30px 48px rgba(0, 0, 0, 0.45));
+      }
+
+      .ghost-bottom {
+        position: absolute;
+        right: 6vw;
+        bottom: 12vh;
+        width: 220px;
+        height: 56px;
+        border-radius: 999px;
+        outline: 2px solid #ffffff;
+        outline-offset: -3px;
+        background: linear-gradient(123deg, #18011f 7%, rgba(182, 0, 168, 0.78) 44%, #be4c00 100%);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.38);
+      }
+
+      .preview-modal-backdrop {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        display: grid;
+        place-items: center;
+        padding: 32px;
+        background:
+          radial-gradient(circle at 50% 42%, rgba(12, 12, 12, 0.18), rgba(0, 0, 0, 0.76) 68%),
+          rgba(0, 0, 0, 0.56);
+      }
+
+      .contact-panel {
+        position: relative;
+        width: min(920px, 92vw);
+        overflow: hidden;
+        border: 2px solid rgba(215, 226, 234, 0.78);
+        border-radius: clamp(24px, 3vw, 42px);
+        padding: clamp(28px, 4.2vw, 54px);
+        background:
+          radial-gradient(circle at 92% 8%, rgba(187, 204, 215, 0.08), transparent 18rem),
+          linear-gradient(135deg, rgba(19, 28, 38, 0.96), rgba(12, 12, 12, 0.98) 62%, rgba(5, 6, 7, 0.98));
+        box-shadow:
+          0 0 0 1px rgba(215, 226, 234, 0.12),
+          0 30px 96px rgba(0, 0, 0, 0.66);
+      }
+
+      .contact-panel::before {
+        position: absolute;
+        inset: 18px;
+        z-index: 0;
+        border: 1px solid rgba(215, 226, 234, 0.12);
+        border-radius: clamp(22px, 2.5vw, 34px);
+        content: "";
+        pointer-events: none;
+      }
+
+      .contact-panel::after {
+        position: absolute;
+        top: -34%;
+        right: -16%;
+        z-index: 0;
+        width: 420px;
+        height: 420px;
+        border-radius: 999px;
+        background: radial-gradient(circle, rgba(187, 204, 215, 0.1), transparent 68%);
+        content: "";
+        filter: blur(8px);
+        pointer-events: none;
+      }
+
+      .close-button {
+        position: absolute;
+        top: 28px;
+        right: 28px;
+        z-index: 2;
+        display: grid;
+        width: 46px;
+        height: 46px;
+        place-items: center;
+        border: 1px solid rgba(215, 226, 234, 0.42);
+        border-radius: 999px;
+        color: #d7e2ea;
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .panel-content {
+        position: relative;
+        z-index: 1;
+      }
+
+      .modal-kicker {
+        margin-bottom: 10px;
+        color: #bbccd7;
+        font-size: clamp(13px, 1.4vw, 18px);
+        font-weight: 800;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+      }
+
+      .title-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 24px;
+        align-items: end;
+        margin-bottom: clamp(26px, 4vw, 42px);
+      }
+
+      .title-row h1 {
+        background: linear-gradient(180deg, #646973 0%, #bbccd7 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        -webkit-text-fill-color: transparent;
+        font-size: clamp(74px, 10vw, 140px);
+        font-weight: 900;
+        line-height: 0.82;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      .title-row p {
+        padding-bottom: 8px;
+        color: #ffffff;
+        font-size: clamp(22px, 3vw, 38px);
+        font-weight: 800;
+        line-height: 1;
+        white-space: nowrap;
+      }
+
+      .contact-list {
+        display: grid;
+        border-top: 1px solid rgba(215, 226, 234, 0.28);
+      }
+
+      .contact-row {
+        display: grid;
+        grid-template-columns: clamp(72px, 9vw, 124px) minmax(0, 1fr) auto;
+        gap: clamp(16px, 3vw, 32px);
+        align-items: center;
+        min-height: 112px;
+        border-bottom: 1px solid rgba(215, 226, 234, 0.22);
+      }
+
+      .contact-row-number {
+        background: linear-gradient(180deg, #646973 0%, #bbccd7 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        -webkit-text-fill-color: transparent;
+        font-size: clamp(48px, 7vw, 94px);
+        font-weight: 900;
+        line-height: 0.86;
+      }
+
+      .contact-copy {
+        min-width: 0;
+      }
+
+      .contact-copy span {
+        display: block;
+        margin-bottom: 9px;
+        color: rgba(215, 226, 234, 0.62);
+        font-size: clamp(13px, 1.5vw, 17px);
+        font-weight: 700;
+      }
+
+      .contact-copy strong {
+        display: block;
+        overflow-wrap: anywhere;
+        color: #ffffff;
+        font-size: clamp(23px, 3.5vw, 42px);
+        font-weight: 800;
+        line-height: 1.02;
+      }
+
+      .copy-button {
+        display: inline-flex;
+        min-width: 100px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        border: 1px solid rgba(215, 226, 234, 0.7);
+        padding: 13px 23px;
+        background: rgba(215, 226, 234, 0.04);
+        box-shadow: none;
+        color: #d7e2ea;
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+      }
+
+      @media (max-width: 720px) {
+        .preview-stage {
+          padding: 18px;
+        }
+
+        .contact-panel {
+          border-radius: 28px;
+          padding: 28px 22px 24px;
+        }
+
+        .close-button {
+          top: 18px;
+          right: 18px;
+          width: 42px;
+          height: 42px;
+          font-size: 12px;
+        }
+
+        .title-row {
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+
+        .title-row h1 {
+          font-size: clamp(54px, 18vw, 96px);
+        }
+
+        .title-row p {
+          padding-bottom: 0;
+        }
+
+        .contact-row {
+          grid-template-columns: 1fr;
+          gap: 14px;
+          align-items: start;
+          padding: 22px 0;
+        }
+
+        .contact-row-number {
+          font-size: 56px;
+        }
+
+        .copy-button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="preview-stage">
+      <div class="page-ghost" aria-hidden="true">
+        <div class="ghost-title">Hi, i'm KUN</div>
+        <div class="ghost-portrait">
+          <img src="public/assets/kun-avatar-transparent.png" alt="" />
+        </div>
+        <div class="ghost-bottom"></div>
+      </div>
+
+      <div class="preview-modal-backdrop">
+        <section class="contact-panel" aria-label="KUN 联系方式弹窗静态设计稿">
+          <button class="close-button" type="button">Close</button>
+
+          <div class="panel-content">
+            <p class="modal-kicker">Contact KUN</p>
+            <div class="title-row">
+              <h1>Contact</h1>
+              <p>联系方式</p>
+            </div>
+
+            <div class="contact-list">
+              <div class="contact-row">
+                <span class="contact-row-number">01</span>
+                <div class="contact-copy">
+                  <span>微信</span>
+                  <strong>KunnnnuK</strong>
+                </div>
+                <button class="copy-button" type="button">复制</button>
+              </div>
+
+              <div class="contact-row">
+                <span class="contact-row-number">02</span>
+                <div class="contact-copy">
+                  <span>电话</span>
+                  <strong>13450491082</strong>
+                </div>
+                <button class="copy-button" type="button">复制</button>
+              </div>
+
+              <div class="contact-row">
+                <span class="contact-row-number">03</span>
+                <div class="contact-copy">
+                  <span>邮箱</span>
+                  <strong>543827446@qq.com</strong>
+                </div>
+                <button class="copy-button" type="button">复制</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>
