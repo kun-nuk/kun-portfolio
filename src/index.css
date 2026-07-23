@@ -280,11 +280,11 @@ img {
 
 .contact-modal {
   position: relative;
-  width: min(100%, 920px);
+  width: min(100%, 900px);
   overflow: hidden;
   border: 2px solid rgba(215, 226, 234, 0.78);
   border-radius: clamp(24px, 3vw, 42px);
-  padding: clamp(1.75rem, 4.2vw, 3.4rem);
+  padding: clamp(1.65rem, 3.6vw, 3.1rem);
   background:
     radial-gradient(circle at 92% 8%, rgba(187, 204, 215, 0.08), transparent 18rem),
     linear-gradient(135deg, rgba(19, 28, 38, 0.96), rgba(12, 12, 12, 0.98) 62%, rgba(5, 6, 7, 0.98));
@@ -324,25 +324,31 @@ img {
   right: clamp(1.05rem, 2vw, 1.75rem);
   z-index: 2;
   display: grid;
-  width: clamp(2.5rem, 4vw, 2.9rem);
-  height: clamp(2.5rem, 4vw, 2.9rem);
+  width: clamp(2.55rem, 4vw, 3rem);
+  height: clamp(2.55rem, 4vw, 3rem);
   place-items: center;
   border: 1px solid rgba(215, 226, 234, 0.42);
   border-radius: 999px;
+  background: rgba(215, 226, 234, 0.04);
   color: #d7e2ea;
-  font-size: clamp(0.64rem, 1vw, 0.8rem);
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  line-height: 1;
-  text-transform: uppercase;
   transition:
     border-color 180ms ease,
-    background-color 180ms ease;
+    background-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.contact-modal-close svg {
+  width: 1.2rem;
+  height: 1.2rem;
+  stroke-width: 2.2;
 }
 
 .contact-modal-close:hover {
   border-color: #ffffff;
   background: rgba(215, 226, 234, 0.1);
+  color: #ffffff;
+  transform: rotate(90deg);
 }
 
 .contact-modal-kicker {
@@ -350,9 +356,9 @@ img {
   z-index: 1;
   margin-bottom: 0.65rem;
   color: #bbccd7;
-  font-size: clamp(0.82rem, 1.4vw, 1.12rem);
-  font-weight: 800;
-  letter-spacing: 0.22em;
+  font-size: clamp(0.72rem, 1.15vw, 0.95rem);
+  font-weight: 700;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 
@@ -362,9 +368,9 @@ img {
   background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
-  font-size: clamp(4rem, 10vw, 8.75rem);
+  font-size: clamp(3.6rem, 8.5vw, 7.7rem);
   font-weight: 900;
-  line-height: 0.82;
+  line-height: 0.88;
   letter-spacing: 0;
   text-transform: uppercase;
 }
@@ -380,10 +386,10 @@ img {
 }
 
 .contact-modal-title-row p {
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.6rem;
   color: #ffffff;
-  font-size: clamp(1.4rem, 3vw, 2.4rem);
-  font-weight: 800;
+  font-size: clamp(1.12rem, 2.4vw, 1.85rem);
+  font-weight: 700;
   line-height: 1;
   white-space: nowrap;
 }
@@ -397,53 +403,42 @@ img {
 
 .contact-info-row {
   display: grid;
-  grid-template-columns: clamp(4.5rem, 9vw, 7.75rem) minmax(0, 1fr) auto;
-  gap: clamp(1rem, 3vw, 2rem);
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(1rem, 2.6vw, 1.8rem);
   align-items: center;
-  min-height: clamp(5.8rem, 9vw, 7rem);
+  min-height: clamp(4.85rem, 7vw, 6.2rem);
   border-bottom: 1px solid rgba(215, 226, 234, 0.22);
-}
-
-.contact-info-number {
-  background: linear-gradient(180deg, #646973 0%, #bbccd7 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  font-size: clamp(3rem, 7vw, 5.9rem);
-  font-weight: 900;
-  line-height: 0.86;
 }
 
 .contact-info-copy {
   display: grid;
   min-width: 0;
-  gap: 0.55rem;
+  gap: 0.5rem;
 }
 
 .contact-info-copy span {
   color: rgba(215, 226, 234, 0.62);
-  font-size: clamp(0.78rem, 1.5vw, 1.06rem);
+  font-size: clamp(0.76rem, 1.25vw, 0.96rem);
   font-weight: 700;
 }
 
 .contact-info-copy strong {
   overflow-wrap: anywhere;
   color: #ffffff;
-  font-size: clamp(1.45rem, 3.5vw, 2.65rem);
-  font-weight: 800;
-  line-height: 1.02;
+  font-size: clamp(1.35rem, 2.65vw, 2.12rem);
+  font-weight: 700;
+  line-height: 1.1;
 }
 
 .contact-info-row button {
   flex: 0 0 auto;
-  min-width: 6.25rem;
+  min-width: 5.4rem;
   border: 1px solid rgba(215, 226, 234, 0.7);
   border-radius: 999px;
-  padding: 0.82rem 1.45rem;
+  padding: 0.76rem 1.28rem;
   background: rgba(215, 226, 234, 0.04);
   color: #d7e2ea;
-  font-size: 0.86rem;
+  font-size: 0.82rem;
   font-weight: 800;
   letter-spacing: 0.12em;
   transition:
@@ -1573,7 +1568,7 @@ img {
     max-height: calc(100svh - 2rem);
     overflow-y: auto;
     border-radius: 28px;
-    padding: 1.75rem 1.35rem 1.5rem;
+    padding: 1.7rem 1.2rem 1.35rem;
   }
 
   .contact-modal::before {
@@ -1586,7 +1581,11 @@ img {
     right: 1rem;
     width: 2.6rem;
     height: 2.6rem;
-    font-size: 0.68rem;
+  }
+
+  .contact-modal-close svg {
+    width: 1.05rem;
+    height: 1.05rem;
   }
 
   .contact-modal-kicker {
@@ -1599,30 +1598,29 @@ img {
   }
 
   .contact-modal h2 {
-    font-size: clamp(3.25rem, 17vw, 5.7rem);
+    font-size: clamp(3.1rem, 15.5vw, 5.2rem);
   }
 
   .contact-modal-title-row p {
     padding-bottom: 0;
+    font-size: 1.12rem;
   }
 
   .contact-info-row {
-    grid-template-columns: 1fr;
-    gap: 0.9rem;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
     align-items: start;
-    padding: 1.4rem 0;
-  }
-
-  .contact-info-number {
-    font-size: 3.6rem;
+    padding: 1.25rem 0;
   }
 
   .contact-info-copy strong {
-    font-size: clamp(1.4rem, 7vw, 2rem);
+    font-size: clamp(1.22rem, 6vw, 1.75rem);
+    line-height: 1.18;
   }
 
   .contact-info-row button {
     width: 100%;
+    padding-block: 0.78rem;
   }
 
   .about-deco {

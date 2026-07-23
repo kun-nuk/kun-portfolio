@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import type { MouseEvent as ReactMouseEvent, ReactNode, RefObject } from 'react';
 
@@ -274,7 +275,7 @@ function ContactModal({ isOpen, onClose }: ContactModalProps) {
         onClick={(event) => event.stopPropagation()}
       >
         <button className="contact-modal-close" type="button" aria-label="关闭联系方式弹窗" onClick={onClose}>
-          Close
+          <X aria-hidden="true" />
         </button>
 
         <p className="contact-modal-kicker">Contact KUN</p>
@@ -284,9 +285,8 @@ function ContactModal({ isOpen, onClose }: ContactModalProps) {
         </div>
 
         <div className="contact-info-list">
-          {contactDetails.map((item, index) => (
+          {contactDetails.map((item) => (
             <div className="contact-info-row" key={item.label}>
-              <span className="contact-info-number">{String(index + 1).padStart(2, '0')}</span>
               <div className="contact-info-copy">
                 <span>{item.label}</span>
                 <strong>{item.value}</strong>
