@@ -12,6 +12,9 @@ function assetUrl(path: string) {
 
 const portraitUrl = assetUrl('assets/kun-avatar-transparent.png');
 const launchScreenUrl = assetUrl('assets/projects/efundgpt-app/launch-screen.png');
+const eWalletPageUrls = Array.from({ length: 8 }, (_, index) =>
+  assetUrl(`assets/projects/e-wallet-app/page-${index + 1}.jpg`),
+);
 
 const contactDetails = [
   { label: '微信', value: 'KunnnnuK' },
@@ -23,9 +26,9 @@ const marqueeImages = [
   assetUrl('assets/projects/efundgpt-app/home-cover.png'),
   assetUrl('assets/projects/efundgpt-app/home-detail.png'),
   assetUrl('assets/projects/efundgpt-app/home-interface.png'),
-  assetUrl('assets/projects/efund-platform/cover-1.webp'),
-  assetUrl('assets/projects/efund-platform/cover-2.webp'),
-  assetUrl('assets/projects/efund-platform/cover-3.webp'),
+  eWalletPageUrls[5],
+  eWalletPageUrls[6],
+  eWalletPageUrls[7],
   assetUrl('assets/projects/solaris-digital/cover-1.webp'),
   assetUrl('assets/projects/solaris-digital/cover-2.webp'),
   assetUrl('assets/projects/solaris-digital/cover-3.webp'),
@@ -35,7 +38,7 @@ const marqueeImages = [
   assetUrl('assets/projects/efundgpt-app/home-interface.png'),
   assetUrl('assets/projects/efundgpt-app/home-detail.png'),
   launchScreenUrl,
-  assetUrl('assets/projects/efund-platform/cover-2.webp'),
+  eWalletPageUrls[5],
   assetUrl('assets/projects/solaris-digital/cover-1.webp'),
   assetUrl('assets/projects/solaris-digital/cover-2.webp'),
 ];
@@ -85,6 +88,7 @@ type Project = {
   number: string;
   name: string;
   slug: string;
+  legacySlugs?: string[];
   category: string;
   summary: string;
   role: string;
@@ -110,9 +114,9 @@ const projects: Project[] = [
     year: '2026',
     scope: ['App Design', 'AI Experience', 'Finance UI'],
     coverImages: [
-      launchScreenUrl,
       assetUrl('assets/projects/efundgpt-app/home-interface.png'),
       assetUrl('assets/projects/efundgpt-app/home-cover.png'),
+      launchScreenUrl,
     ],
     detailImages: [
       assetUrl('assets/projects/efundgpt-app/mockup.png'),
@@ -129,23 +133,25 @@ const projects: Project[] = [
   },
   {
     number: '02',
-    name: 'EFund platform',
-    slug: 'efund-platform',
-    category: 'Web design',
+    name: 'E钱包 APP',
+    slug: 'e-wallet-app',
+    legacySlugs: ['efund-platform'],
+    category: 'App design',
     summary:
-      'A web platform direction for fund discovery, analytics, and portfolio management.',
+      '易方达 E 钱包 App 作为直销渠道，承载产品信息展示、销售与用户资产管理。本次案例围绕品牌升级、信息架构重组和移动端基金交易体验进行设计焕新。',
     role: 'UX/UI Designer',
     year: '2026',
-    scope: ['Web Design', 'Dashboard', 'Financial Platform'],
-    coverImages: [
-      assetUrl('assets/projects/efund-platform/cover-1.webp'),
-      assetUrl('assets/projects/efund-platform/cover-2.webp'),
-      assetUrl('assets/projects/efund-platform/cover-3.webp'),
-    ],
+    scope: ['App Redesign', 'Finance UI', 'Design System'],
+    coverImages: [eWalletPageUrls[6], eWalletPageUrls[7], eWalletPageUrls[5]],
     detailImages: [
-      assetUrl('assets/projects/efund-platform/cover-1.webp'),
-      assetUrl('assets/projects/efund-platform/cover-2.webp'),
-      assetUrl('assets/projects/efund-platform/cover-3.webp'),
+      eWalletPageUrls[5],
+      eWalletPageUrls[0],
+      eWalletPageUrls[1],
+      eWalletPageUrls[2],
+      eWalletPageUrls[3],
+      eWalletPageUrls[4],
+      eWalletPageUrls[6],
+      eWalletPageUrls[7],
     ],
   },
   {
@@ -169,6 +175,61 @@ const projects: Project[] = [
       assetUrl('assets/projects/solaris-digital/cover-3.webp'),
     ],
   },
+];
+
+const eWalletProcess = [
+  {
+    phase: 'Research',
+    title: '调研分析',
+    body: '讨论需求、整理文档、市场调研、竞品分析，并形成产品初步框架。',
+  },
+  {
+    phase: 'Design',
+    title: '方案设计',
+    body: '完成功能模块分类、视觉风格探索、规范设定、组件库搭建、设计排期与界面设计。',
+  },
+  {
+    phase: 'Delivery',
+    title: '测试开发',
+    body: '配合开发跟进视觉还原，完成功能测试、验收与上线。',
+  },
+];
+
+const eWalletInsights = [
+  {
+    title: '产品背景',
+    body: 'E 钱包 App 是易方达重要的直销渠道，承载产品信息展示、销售、用户资产管理等核心功能。随着用户习惯改变和品牌升级，需要同步进行设计风格升级。',
+  },
+  {
+    title: '核心用户',
+    body: '调研显示男女分布均衡，年龄集中在 30-40 岁；约 6% 用户持有 80% 的账户资产，易方达账户资产在 20 万以上的用户成为本次改版研究核心。',
+  },
+  {
+    title: '旧版问题',
+    body: '旧版在业务、品牌、用户和视觉维度存在重点不突出、功能入口不直观、品牌符号弱、内容展示低效和视觉语言不统一等问题。',
+  },
+  {
+    title: '设计目标',
+    body: '从视觉层、交互层和架构层同时优化：明确层级、降噪减负、强化品牌，简化路径并合并功能，让主要模块和定制化推荐更突出。',
+  },
+];
+
+const eWalletColors = [
+  { label: '品牌色', value: '#0063BA', color: '#0063BA' },
+  { label: '辅助色', value: '#1EB9E1', color: '#1EB9E1' },
+  { label: '辅助色', value: '#FFC819', color: '#FFC819' },
+  { label: '字体', value: 'PingFang / Helvetica', color: 'linear-gradient(135deg, #f5f9ff, #bfdff6)' },
+];
+
+const eWalletSlides = [
+  { title: '产品背景与项目流程', image: eWalletPageUrls[0] },
+  { title: '用户调研与核心人群', image: eWalletPageUrls[1] },
+  { title: '旧版解析与设计目的', image: eWalletPageUrls[2] },
+  { title: '品牌传递', image: eWalletPageUrls[3] },
+  { title: '风格定义', image: eWalletPageUrls[4] },
+  { title: '首页改版展示', image: eWalletPageUrls[5] },
+  { title: '基金页与基金详情', image: eWalletPageUrls[6] },
+  { title: '我的页面与全量界面', image: eWalletPageUrls[7] },
 ];
 
 type FadeInProps = {
@@ -603,9 +664,7 @@ function ProjectsSection() {
       <div className="project-stack">
         {projects.map((project, index) => (
           <a
-            className={`project-card project-link-card${
-              project.slug === 'efundgpt-app' ? ' project-card-feature-left' : ''
-            }`}
+            className="project-card project-link-card project-card-feature-left"
             href={getProjectPath(project)}
             key={project.number}
             onClick={(event) => handleInternalRouteClick(event, getProjectPath(project))}
@@ -662,6 +721,171 @@ function HomePage({ onOpenContact }: { onOpenContact: () => void }) {
   );
 }
 
+function EWalletCasePage({ onOpenContact, project }: { onOpenContact: () => void; project: Project }) {
+  return (
+    <main className="efund-case-shell ewallet-case-shell">
+      <section className="efund-case-hero">
+        <nav className="efund-case-nav" aria-label="Case navigation">
+          <a
+            href={getProjectsHomePath()}
+            onClick={(event) => handleInternalRouteClick(event, getProjectsHomePath())}
+          >
+            KUN Portfolio
+          </a>
+          <button type="button" onClick={onOpenContact}>
+            Contact
+          </button>
+        </nav>
+
+        <div className="efund-light-rays" aria-hidden="true">
+          <LightRays
+            raysOrigin="top-center"
+            raysColor="#0063BA"
+            raysSpeed={0.75}
+            lightSpread={1.05}
+            rayLength={1.55}
+            fadeDistance={1.15}
+            saturation={1}
+            followMouse
+            mouseInfluence={0.06}
+            noiseAmount={0.06}
+            distortion={0.04}
+          />
+        </div>
+
+        <div className="efund-hero-grid">
+          <FadeIn className="efund-hero-copy">
+            <p className="efund-case-kicker">App Design / Finance Product Redesign</p>
+            <h1>{project.name}</h1>
+            <p>{project.summary}</p>
+            <div className="efund-role-strip" aria-label="Project facts">
+              <span>Role: {project.role}</span>
+              <span>Year: {project.year}</span>
+              <span>Scope: {project.scope.join(' / ')}</span>
+            </div>
+          </FadeIn>
+
+          <FadeIn className="efund-hero-visual" delay={0.08}>
+            <img src={eWalletPageUrls[5]} alt="E钱包 APP 首页改版展示" />
+          </FadeIn>
+        </div>
+      </section>
+
+      <section className="efund-case-band">
+        <FadeIn className="efund-section-intro">
+          <p className="efund-case-kicker">Project Process</p>
+          <h2>从调研到上线的完整设计流程</h2>
+          <p>围绕直销 App 的核心业务场景，将调研分析、方案设计与测试开发串成可落地的产品改版路径。</p>
+        </FadeIn>
+
+        <div className="efund-module-track">
+          {eWalletProcess.map((item, index) => (
+            <FadeIn className="efund-module-item" delay={index * 0.06} key={item.phase}>
+              <span>{item.phase}</span>
+              <strong>{item.title}</strong>
+              <p>{item.body}</p>
+            </FadeIn>
+          ))}
+        </div>
+      </section>
+
+      <section className="efund-case-band">
+        <FadeIn className="efund-section-intro">
+          <p className="efund-case-kicker">Research / Problem / Goal</p>
+          <h2>重点梳理</h2>
+          <p>将 PDF 中的背景、用户、旧版问题与设计目标重排成更适合网页阅读的案例结构。</p>
+        </FadeIn>
+
+        <div className="efund-insight-grid">
+          {eWalletInsights.map((item, index) => (
+            <FadeIn className="efund-insight-card" delay={index * 0.04} key={item.title}>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </FadeIn>
+          ))}
+        </div>
+      </section>
+
+      <section className="efund-case-band">
+        <div className="efund-system-band">
+          <FadeIn className="efund-system-copy">
+            <p className="efund-case-kicker">Style Definition</p>
+            <h2>品牌视觉系统</h2>
+            <p>
+              在易方达品牌规范基础上，提高蓝色饱和度，配合辅助青与辅助黄，让界面保持母品牌基因，同时更轻盈、更年轻。
+            </p>
+          </FadeIn>
+
+          <FadeIn className="efund-token-panel" delay={0.08}>
+            {eWalletColors.map((item) => (
+              <div className="efund-color-token" key={item.value}>
+                <span style={{ background: item.color }} />
+                <strong>{item.value}</strong>
+                <em>{item.label}</em>
+              </div>
+            ))}
+          </FadeIn>
+        </div>
+      </section>
+
+      <section className="efund-case-band">
+        <FadeIn className="efund-section-intro">
+          <p className="efund-case-kicker">Interface Presentation</p>
+          <h2>核心界面展示</h2>
+          <p>重点展示首页、基金页、基金详情和我的页面的结构升级、信息层级和资产管理体验。</p>
+        </FadeIn>
+
+        <div className="efund-showcase-grid">
+          {[
+            { label: 'Home Page', image: eWalletPageUrls[5] },
+            { label: 'Fund / Fund Details', image: eWalletPageUrls[6] },
+            { label: 'My Page', image: eWalletPageUrls[7] },
+            { label: 'Style System', image: eWalletPageUrls[4] },
+          ].map((item, index) => (
+            <FadeIn className="efund-showcase-frame" delay={(index % 2) * 0.06} key={item.label}>
+              <img src={item.image} alt={`E钱包 APP ${item.label}`} loading="lazy" />
+              <span>{item.label}</span>
+            </FadeIn>
+          ))}
+        </div>
+      </section>
+
+      <section className="efund-case-band">
+        <FadeIn className="efund-section-intro">
+          <p className="efund-case-kicker">Full Case Pages</p>
+          <h2>完整案例页面</h2>
+          <p>保留 PDF 的 8 个原始章节画面，作为网页案例的补充浏览内容。</p>
+        </FadeIn>
+
+        <div className="efund-slide-grid">
+          {eWalletSlides.map((slide, index) => (
+            <FadeIn className="efund-slide-card" delay={(index % 4) * 0.04} key={slide.title}>
+              <img src={slide.image} alt={`E钱包 APP ${slide.title}`} loading="lazy" />
+              <div>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <strong>{slide.title}</strong>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </section>
+
+      <footer className="efund-case-footer">
+        <a
+          href={getProjectsHomePath()}
+          onClick={(event) => handleInternalRouteClick(event, getProjectsHomePath())}
+        >
+          Back to Projects
+        </a>
+        <button type="button" onClick={onOpenContact}>
+          Contact Me
+        </button>
+      </footer>
+    </main>
+  );
+}
+
 function useRouteLocation() {
   const [route, setRoute] = useState(() => ({
     hash: window.location.hash,
@@ -689,6 +913,10 @@ function useRouteLocation() {
 }
 
 function ProjectDetailPage({ onOpenContact, project }: { onOpenContact: () => void; project: Project }) {
+  if (project.slug === 'e-wallet-app') {
+    return <EWalletCasePage onOpenContact={onOpenContact} project={project} />;
+  }
+
   const isEfundProject = project.slug === 'efundgpt-app';
 
   return (
@@ -810,7 +1038,9 @@ export default function App() {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const hashProjectSlug = route.hash.match(/^#\/projects\/([^/]+)\/?$/)?.[1];
   const projectSlug = hashProjectSlug ?? route.pathname.match(/^\/projects\/([^/]+)\/?$/)?.[1];
-  const project = projects.find((item) => item.slug === projectSlug);
+  const project = projects.find(
+    (item) => item.slug === projectSlug || item.legacySlugs?.includes(projectSlug ?? ''),
+  );
   const isHomePath = route.pathname === '/' || route.pathname.endsWith('/index.html');
   const isFileHomePath = isFileBuild() && !hashProjectSlug;
   const openContactModal = () => setIsContactModalOpen(true);
