@@ -18,6 +18,16 @@ const eWalletPageUrls = Array.from({ length: 8 }, (_, index) =>
 const eWalletCoverOverviewUrl = assetUrl('assets/projects/e-wallet-app/cover-overview.png');
 const eWalletDesignPurposeUrl = assetUrl('assets/projects/e-wallet-app/design-purpose.png');
 const eWalletInterfaceShowcaseUrl = assetUrl('assets/projects/e-wallet-app/interface-showcase.png');
+const eWalletHeroHomeScreenUrl = assetUrl('assets/projects/e-wallet-app/hero-home-screen.png');
+const eWalletBrandDeliveryOverviewUrl = assetUrl('assets/projects/e-wallet-app/brand-delivery-overview.jpg');
+const eWalletBrandGenePanelUrl = assetUrl('assets/projects/e-wallet-app/brand-gene-panel.png');
+const eWalletBrandExposurePanelUrl = assetUrl('assets/projects/e-wallet-app/brand-exposure-panel.png');
+const eWalletBrandSymbolPanelUrl = assetUrl('assets/projects/e-wallet-app/brand-symbol-panel.png');
+const eWalletGridLayoutPanelUrl = assetUrl('assets/projects/e-wallet-app/grid-layout-panel.png');
+const eWalletGraphicSystemPanelUrl = assetUrl('assets/projects/e-wallet-app/graphic-system-panel.png');
+const eWalletPersonaZhangUrl = assetUrl('assets/projects/e-wallet-app/persona-zhang.png');
+const eWalletPersonaChenUrl = assetUrl('assets/projects/e-wallet-app/persona-chen.png');
+const eWalletPersonaCaiUrl = assetUrl('assets/projects/e-wallet-app/persona-cai.png');
 
 const contactDetails = [
   { label: '微信', value: 'KunnnnuK' },
@@ -236,9 +246,36 @@ const eWalletPreferenceDistribution = [
 ];
 
 const eWalletPersonas = [
-  { name: '张某某', age: '20 岁', type: '上进青年' },
-  { name: '陈某某', age: '36 岁', type: '职场白领' },
-  { name: '蔡某某', age: '58 岁', type: '佛系长者' },
+  {
+    name: '张某某',
+    age: '20 岁',
+    type: '上进青年',
+    avatar: eWalletPersonaZhangUrl,
+    needs:
+      '比较注重产品的安全性和收益情况，渴望财富增长，具有较强的自我提升意愿。',
+    behavior:
+      '积极进取，善于自主学习，利用碎片时间通过互联网学习理财知识。常浏览理财信息，并乐意尝试各种金融产品。',
+  },
+  {
+    name: '陈某某',
+    age: '36 岁',
+    type: '职场白领',
+    avatar: eWalletPersonaChenUrl,
+    needs:
+      '追求生活品质，注重高效、专业的服务体验，在直销 app 上购买基金的目的明确。',
+    behavior:
+      '关注专业机构的市场行情分析、媒体资讯等。对市场行情和理财需求有清楚认知，有主见，不需要直销 app 给过多引导和资讯。',
+  },
+  {
+    name: '蔡某某',
+    age: '58 岁',
+    type: '佛系长者',
+    avatar: eWalletPersonaCaiUrl,
+    needs:
+      '偏爱购买保障类和权益类产品，希望 app 给一些引导、推荐和专业分析。',
+    behavior:
+      '基金持有周期较长，不会频繁交易，倾向客户经理一对一的投资教育形式。通过朋友告知或客户经理推荐购买基金咨询人工客服较多。',
+  },
 ];
 
 const eWalletProblemGroups = [
@@ -279,14 +316,17 @@ const eWalletBrandDelivery = [
   {
     title: '提炼品牌基因',
     body: '沿用易方达品牌符号，通常用在卡片右上角，传达品牌并丰富页面。',
+    image: eWalletBrandGenePanelUrl,
   },
   {
     title: '强化品牌外露',
     body: '通过易方达品牌传播度强化 E钱包品牌知名度，并在多种场景露出品牌以强化用户记忆。',
+    image: eWalletBrandExposurePanelUrl,
   },
   {
     title: '打造品牌符号',
     body: '在 UI 设计中通过界面内容结合情感化设计做衍生，让用户通过色彩、图形对品牌产生记忆与认知。',
+    image: eWalletBrandSymbolPanelUrl,
   },
 ];
 
@@ -306,8 +346,6 @@ const eWalletGridRules = [
   '建立统一布局基础，提升团队输出的一致性。',
   '以 8 的整数倍建立间距规则，适配不同机型分辨率。',
 ];
-
-const eWalletGraphicSystem = ['金刚区图标', '咨询入口', '专题头图', '辅助图形'];
 
 const eWalletInterfaces = [
   {
@@ -919,7 +957,7 @@ function EWalletCasePage({ onOpenContact, project }: { onOpenContact: () => void
           </FadeIn>
 
           <FadeIn className="ewallet-cover-board" delay={0.08}>
-            <img src={eWalletPageUrls[0]} alt="E钱包 APP 产品背景与项目流程" />
+            <img src={eWalletHeroHomeScreenUrl} alt="E钱包 APP 首页界面展示" />
           </FadeIn>
         </div>
       </section>
@@ -977,11 +1015,23 @@ function EWalletCasePage({ onOpenContact, project }: { onOpenContact: () => void
             </p>
           </div>
           <div className="ewallet-persona-list">
-            {eWalletPersonas.map((persona) => (
+            {eWalletPersonas.map((persona, index) => (
               <article className="ewallet-persona-card" key={persona.name}>
-                <span>{persona.age}</span>
-                <strong>{persona.name}</strong>
-                <p>{persona.type}</p>
+                <div className="ewallet-persona-head">
+                  <img src={persona.avatar} alt={`${persona.name}用户画像`} loading="lazy" />
+                  <div>
+                    <span>{persona.name}</span>
+                    <strong>{persona.age}</strong>
+                    <p>{persona.type}</p>
+                  </div>
+                  <em>{String(index + 1).padStart(2, '0')}</em>
+                </div>
+                <div className="ewallet-persona-copy">
+                  <h4>需求偏好：</h4>
+                  <p>{persona.needs}</p>
+                  <h4>行为偏好：</h4>
+                  <p>{persona.behavior}</p>
+                </div>
               </article>
             ))}
           </div>
@@ -1030,16 +1080,21 @@ function EWalletCasePage({ onOpenContact, project }: { onOpenContact: () => void
           </EWalletSectionHeading>
 
           <FadeIn className="ewallet-brand-image" delay={0.08}>
-            <img src={eWalletPageUrls[3]} alt="E钱包 APP 品牌传递" loading="lazy" />
+            <img src={eWalletBrandDeliveryOverviewUrl} alt="E钱包 APP 品牌传递概览" loading="lazy" />
           </FadeIn>
         </div>
 
         <div className="ewallet-brand-card-grid">
           {eWalletBrandDelivery.map((item, index) => (
             <FadeIn className="ewallet-brand-card" delay={index * 0.04} key={item.title}>
-              <span>{String(index + 1).padStart(2, '0')}</span>
-              <h3>{item.title}</h3>
-              <p>{item.body}</p>
+              <div className="ewallet-brand-card-copy">
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <div>
+                  <h3>{item.title}</h3>
+                  <p>{item.body}</p>
+                </div>
+              </div>
+              <img className="ewallet-brand-card-image" src={item.image} alt={`E钱包 APP ${item.title}`} loading="lazy" />
             </FadeIn>
           ))}
         </div>
@@ -1076,22 +1131,29 @@ function EWalletCasePage({ onOpenContact, project }: { onOpenContact: () => void
             ))}
           </FadeIn>
 
-          <FadeIn className="ewallet-style-card" delay={0.08}>
+          <FadeIn className="ewallet-style-card ewallet-style-card-with-image" delay={0.08}>
             <h3>网格布局</h3>
             <ul>
               {eWalletGridRules.map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
+            <img
+              className="ewallet-style-support-image ewallet-grid-layout-image"
+              src={eWalletGridLayoutPanelUrl}
+              alt="E钱包 APP 网格布局辅助说明"
+              loading="lazy"
+            />
           </FadeIn>
 
-          <FadeIn className="ewallet-style-card" delay={0.12}>
+          <FadeIn className="ewallet-style-card ewallet-style-card-wide ewallet-style-card-with-image" delay={0.12}>
             <h3>图形体系</h3>
-            <div className="ewallet-tag-cloud">
-              {eWalletGraphicSystem.map((item) => (
-                <span key={item}>{item}</span>
-              ))}
-            </div>
+            <img
+              className="ewallet-style-support-image ewallet-graphic-system-image"
+              src={eWalletGraphicSystemPanelUrl}
+              alt="E钱包 APP 图形体系展示"
+              loading="lazy"
+            />
           </FadeIn>
         </div>
       </section>
