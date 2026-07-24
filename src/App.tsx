@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import type { MouseEvent as ReactMouseEvent, ReactNode, RefObject } from 'react';
+import type { CSSProperties, MouseEvent as ReactMouseEvent, ReactNode, RefObject } from 'react';
 
 import DotField from './components/DotField';
 import LightRays from './components/LightRays';
@@ -179,57 +179,170 @@ const projects: Project[] = [
 
 const eWalletProcess = [
   {
-    phase: 'Research',
+    phase: '01',
     title: '调研分析',
     body: '讨论需求、整理文档、市场调研、竞品分析，并形成产品初步框架。',
   },
   {
-    phase: 'Design',
+    phase: '02',
     title: '方案设计',
     body: '完成功能模块分类、视觉风格探索、规范设定、组件库搭建、设计排期与界面设计。',
   },
   {
-    phase: 'Delivery',
+    phase: '03',
     title: '测试开发',
     body: '配合开发跟进视觉还原，完成功能测试、验收与上线。',
   },
 ];
 
-const eWalletInsights = [
+const eWalletResearchStats = [
   {
-    title: '产品背景',
-    body: 'E 钱包 App 是易方达重要的直销渠道，承载产品信息展示、销售、用户资产管理等核心功能。随着用户习惯改变和品牌升级，需要同步进行设计风格升级。',
+    value: '51% / 49%',
+    label: '性别分布',
+    body: '女性 51%，男性 49%，男女用户比例基本均衡。',
   },
   {
-    title: '核心用户',
-    body: '调研显示男女分布均衡，年龄集中在 30-40 岁；约 6% 用户持有 80% 的账户资产，易方达账户资产在 20 万以上的用户成为本次改版研究核心。',
+    value: '30-40 岁',
+    label: '核心年龄',
+    body: '用户年龄集中在 30-40 岁，占比 39.7%。',
   },
   {
-    title: '旧版问题',
-    body: '旧版在业务、品牌、用户和视觉维度存在重点不突出、功能入口不直观、品牌符号弱、内容展示低效和视觉语言不统一等问题。',
-  },
-  {
-    title: '设计目标',
-    body: '从视觉层、交互层和架构层同时优化：明确层级、降噪减负、强化品牌，简化路径并合并功能，让主要模块和定制化推荐更突出。',
+    value: '6%',
+    label: '资产核心用户',
+    body: '约 6% 用户持有 80% 的账户资产，20 万以上资产用户成为重点研究对象。',
   },
 ];
 
-const eWalletColors = [
+const eWalletAgeDistribution = [
+  { label: '20 岁以下', value: 0.1 },
+  { label: '20-30 岁', value: 21.4 },
+  { label: '30-40 岁', value: 39.7 },
+  { label: '40-50 岁', value: 21.6 },
+  { label: '50-60 岁', value: 12.4 },
+  { label: '60 岁以上', value: 4.8 },
+];
+
+const eWalletPreferenceDistribution = [
+  { label: '最低类别 C0', value: 1.0 },
+  { label: '安益型 C1', value: 1.1 },
+  { label: '保守型 C2', value: 4.4 },
+  { label: '稳健型 C3', value: 30.3 },
+  { label: '积极型 C4', value: 21.2 },
+  { label: '激进型 C5', value: 2.0 },
+  { label: '未知', value: 40.0 },
+];
+
+const eWalletPersonas = [
+  { name: '张某某', age: '20 岁', type: '上进青年' },
+  { name: '陈某某', age: '36 岁', type: '职场白领' },
+  { name: '蔡某某', age: '58 岁', type: '佛系长者' },
+];
+
+const eWalletProblemGroups = [
+  {
+    title: '业务维度',
+    points: ['缺乏运营活动推广区域', '快捷功能入口、产品推荐位不直观', '重点和特色内容不突出'],
+  },
+  {
+    title: '品牌维度',
+    points: ['IP 形象延展弱', '品牌核心塑造不明确', '缺乏直接的品牌符号或标识'],
+  },
+  {
+    title: '用户维度',
+    points: ['不满足目标用户群体', '内容单调不够丰富', '图标辨别度差'],
+  },
+  {
+    title: '视觉维度',
+    points: ['版本老旧，内容展示低效', '页面色彩搭配混乱，主色调不明确', '缺乏品质感与品牌设计语言'],
+  },
+];
+
+const eWalletDesignGoals = [
+  {
+    title: '视觉层',
+    body: '层级明确，降噪减负，规范统一，强化品牌，适当增加情感化设计，提升用户体验。',
+  },
+  {
+    title: '交互层',
+    body: '简化路径，优化信息展示层级，避免多次跳转，减少认知和学习成本，提升操作体验。',
+  },
+  {
+    title: '架构层',
+    body: '合并功能，凸显主要模块；增加用户引流与定制化推荐，提升用户操作体验和转化率。',
+  },
+];
+
+const eWalletBrandDelivery = [
+  {
+    title: '提炼品牌基因',
+    body: '沿用易方达品牌符号，通常用在卡片右上角，传达品牌并丰富页面。',
+  },
+  {
+    title: '强化品牌外露',
+    body: '通过易方达品牌传播度强化 E钱包品牌知名度，并在多种场景露出品牌以强化用户记忆。',
+  },
+  {
+    title: '打造品牌符号',
+    body: '在 UI 设计中通过界面内容结合情感化设计做衍生，让用户通过色彩、图形对品牌产生记忆与认知。',
+  },
+];
+
+const eWalletColorTokens = [
   { label: '品牌色', value: '#0063BA', color: '#0063BA' },
   { label: '辅助色', value: '#1EB9E1', color: '#1EB9E1' },
   { label: '辅助色', value: '#FFC819', color: '#FFC819' },
-  { label: '字体', value: 'PingFang / Helvetica', color: 'linear-gradient(135deg, #f5f9ff, #bfdff6)' },
 ];
 
-const eWalletSlides = [
-  { title: '产品背景与项目流程', image: eWalletPageUrls[0] },
-  { title: '用户调研与核心人群', image: eWalletPageUrls[1] },
-  { title: '旧版解析与设计目的', image: eWalletPageUrls[2] },
-  { title: '品牌传递', image: eWalletPageUrls[3] },
-  { title: '风格定义', image: eWalletPageUrls[4] },
-  { title: '首页改版展示', image: eWalletPageUrls[5] },
-  { title: '基金页与基金详情', image: eWalletPageUrls[6] },
-  { title: '我的页面与全量界面', image: eWalletPageUrls[7] },
+const eWalletTypography = [
+  { label: '中文字体', value: '苹方 PingFang' },
+  { label: '数字字体', value: 'Helvetica 1234567890' },
+];
+
+const eWalletGridRules = [
+  '界面模块化设计，强化信息层次。',
+  '建立统一布局基础，提升团队输出的一致性。',
+  '以 8 的整数倍建立间距规则，适配不同机型分辨率。',
+];
+
+const eWalletGraphicSystem = ['金刚区图标', '咨询入口', '专题头图', '辅助图形'];
+
+const eWalletInterfaces = [
+  {
+    title: '首页改版展示',
+    label: 'Home Page',
+    image: eWalletPageUrls[5],
+    body: '首页围绕搜索、登录、资产信息、运营活动、金刚区和产品内容进行重组，让用户更快触达核心信息，也让品牌基因在高频入口中持续外露。',
+    points: [
+      '搜索区域降低信息查找门槛，提高触达内容效率。',
+      '登录成功后展示资产信息，并提供一键登录与完善资料引导。',
+      '瓷片区与金刚区减少操作路径，品牌色与辅助色配合轻质感图标，提升识别效率。',
+      '对产品内容重新划分，突出基金亮点、深入解剖分析和内容分流。',
+    ],
+  },
+  {
+    title: '基金页与基金详情',
+    label: 'Fund / Details',
+    image: eWalletPageUrls[6],
+    body: '基金相关页面将旧版拥挤的筛选与信息展示重构为更清晰的层级，让用户从基金分类、发行阶段到详情走势都能快速判断。',
+    points: [
+      '基金类型入口直达对应产品列表，提高获取效率。',
+      '筛选区域改造为金刚区，并配合图标帮助用户直观理解。',
+      '新增新发基金和最近浏览模块，优化基金信息获取路径。',
+      '详情页顶部集中展示基金核心信息，并强化涨跌、收益曲线和关键互动问题。',
+    ],
+  },
+  {
+    title: '我的页面与资产管理',
+    label: 'My Page',
+    image: eWalletPageUrls[7],
+    body: '“我的”页面被定义为资产管理和账户体系管理的核心场景，重点提升持仓、收益、快捷入口和资产信息的可读性。',
+    points: [
+      '增加美元资产模块，满足不同用户需求。',
+      '按不同收益类型划分，让收益信息一目了然。',
+      '通过收益数据可视化提升信息获取效率。',
+      '增加快捷入口，减少路径跳转，优化操作体验。',
+    ],
+  },
 ];
 
 type FadeInProps = {
@@ -721,11 +834,59 @@ function HomePage({ onOpenContact }: { onOpenContact: () => void }) {
   );
 }
 
+function EWalletSectionHeading({
+  children,
+  eyebrow,
+  title,
+}: {
+  children: ReactNode;
+  eyebrow: string;
+  title: string;
+}) {
+  return (
+    <FadeIn className="ewallet-section-heading">
+      <p>{eyebrow}</p>
+      <h2>{title}</h2>
+      <div>{children}</div>
+    </FadeIn>
+  );
+}
+
+function EWalletBarList({
+  items,
+  title,
+}: {
+  items: Array<{ label: string; value: number }>;
+  title: string;
+}) {
+  return (
+    <div className="ewallet-chart-card">
+      <h3>{title}</h3>
+      <div className="ewallet-bar-list">
+        {items.map((item) => (
+          <div className="ewallet-bar-row" key={item.label}>
+            <div>
+              <span>{item.label}</span>
+              <strong>{item.value.toFixed(1)}%</strong>
+            </div>
+            <div className="ewallet-bar-track">
+              <i
+                className="ewallet-bar-fill"
+                style={{ '--bar-value': `${item.value}%` } as CSSProperties}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function EWalletCasePage({ onOpenContact, project }: { onOpenContact: () => void; project: Project }) {
   return (
-    <main className="efund-case-shell ewallet-case-shell">
-      <section className="efund-case-hero">
-        <nav className="efund-case-nav" aria-label="Case navigation">
+    <main className="ewallet-replica-shell">
+      <section className="ewallet-hero" id="ewallet-top">
+        <nav className="ewallet-nav" aria-label="Case navigation">
           <a
             href={getProjectsHomePath()}
             onClick={(event) => handleInternalRouteClick(event, getProjectsHomePath())}
@@ -737,50 +898,39 @@ function EWalletCasePage({ onOpenContact, project }: { onOpenContact: () => void
           </button>
         </nav>
 
-        <div className="efund-light-rays" aria-hidden="true">
-          <LightRays
-            raysOrigin="top-center"
-            raysColor="#0063BA"
-            raysSpeed={0.75}
-            lightSpread={1.05}
-            rayLength={1.55}
-            fadeDistance={1.15}
-            saturation={1}
-            followMouse
-            mouseInfluence={0.06}
-            noiseAmount={0.06}
-            distortion={0.04}
-          />
-        </div>
-
-        <div className="efund-hero-grid">
-          <FadeIn className="efund-hero-copy">
-            <p className="efund-case-kicker">App Design / Finance Product Redesign</p>
-            <h1>{project.name}</h1>
-            <p>{project.summary}</p>
-            <div className="efund-role-strip" aria-label="Project facts">
+        <div className="ewallet-hero-grid">
+          <FadeIn className="ewallet-hero-copy">
+            <p className="ewallet-kicker">App Design / Finance Product Redesign</p>
+            <h1>
+              <span>E钱包</span>
+              <strong>APP</strong>
+            </h1>
+            <p>
+              易方达 E 钱包 App 作为重要的直销渠道，承载产品信息展示、销售、用户资产管理等核心功能。本次案例围绕品牌升级、信息架构重组和移动端基金交易体验进行设计焕新。
+            </p>
+            <div className="ewallet-hero-meta" aria-label="Project facts">
               <span>Role: {project.role}</span>
               <span>Year: {project.year}</span>
               <span>Scope: {project.scope.join(' / ')}</span>
             </div>
           </FadeIn>
 
-          <FadeIn className="efund-hero-visual" delay={0.08}>
-            <img src={eWalletPageUrls[5]} alt="E钱包 APP 首页改版展示" />
+          <FadeIn className="ewallet-cover-board" delay={0.08}>
+            <img src={eWalletPageUrls[0]} alt="E钱包 APP 产品背景与项目流程" />
           </FadeIn>
         </div>
       </section>
 
-      <section className="efund-case-band">
-        <FadeIn className="efund-section-intro">
-          <p className="efund-case-kicker">Project Process</p>
-          <h2>从调研到上线的完整设计流程</h2>
-          <p>围绕直销 App 的核心业务场景，将调研分析、方案设计与测试开发串成可落地的产品改版路径。</p>
-        </FadeIn>
+      <section className="ewallet-section ewallet-background-section">
+        <EWalletSectionHeading eyebrow="Project Background" title="产品背景与项目流程">
+          <p>
+            近年来，国民投资理财意识日渐觉醒，投资理财需求不断激增。“E钱包”APP 作为易方达重要的直销渠道，承担产品信息展示、销售、用户资产管理等核心能力。随着互联网时代用户习惯改变和其他官方形象的品牌升级，E钱包也需要同步完成设计风格升级。
+          </p>
+        </EWalletSectionHeading>
 
-        <div className="efund-module-track">
+        <div className="ewallet-process-grid">
           {eWalletProcess.map((item, index) => (
-            <FadeIn className="efund-module-item" delay={index * 0.06} key={item.phase}>
+            <FadeIn className="ewallet-process-card" delay={index * 0.06} key={item.phase}>
               <span>{item.phase}</span>
               <strong>{item.title}</strong>
               <p>{item.body}</p>
@@ -789,16 +939,101 @@ function EWalletCasePage({ onOpenContact, project }: { onOpenContact: () => void
         </div>
       </section>
 
-      <section className="efund-case-band">
-        <FadeIn className="efund-section-intro">
-          <p className="efund-case-kicker">Research / Problem / Goal</p>
-          <h2>重点梳理</h2>
-          <p>将 PDF 中的背景、用户、旧版问题与设计目标重排成更适合网页阅读的案例结构。</p>
-        </FadeIn>
+      <section className="ewallet-section ewallet-research-section">
+        <EWalletSectionHeading eyebrow="User Research" title="用户调研">
+          <p>
+            易方达 E钱包整体用户男女分布均衡，年龄集中在 30-40 岁，登录频次以 1-5 次/月较多，投资偏好集中在稳健型和积极型。资产高度集中，因此高资产用户是本次改版研究核心。
+          </p>
+        </EWalletSectionHeading>
 
-        <div className="efund-insight-grid">
-          {eWalletInsights.map((item, index) => (
-            <FadeIn className="efund-insight-card" delay={index * 0.04} key={item.title}>
+        <div className="ewallet-stat-grid">
+          {eWalletResearchStats.map((item, index) => (
+            <FadeIn className="ewallet-stat-card" delay={index * 0.05} key={item.label}>
+              <strong>{item.value}</strong>
+              <span>{item.label}</span>
+              <p>{item.body}</p>
+            </FadeIn>
+          ))}
+        </div>
+
+        <div className="ewallet-chart-grid">
+          <FadeIn>
+            <EWalletBarList title="年龄分布" items={eWalletAgeDistribution} />
+          </FadeIn>
+          <FadeIn delay={0.06}>
+            <EWalletBarList title="投资偏好" items={eWalletPreferenceDistribution} />
+          </FadeIn>
+        </div>
+
+        <FadeIn className="ewallet-persona-panel">
+          <div>
+            <p className="ewallet-kicker">Personas</p>
+            <h3>典型用户画像</h3>
+            <p>
+              越来越多年轻人开始投资理财，年轻人的新投资偏好和理财习惯成为金融市场的重要变量。如何抓住年轻人群，是金融投资互联网平台保持持续增长不可忽略的问题。
+            </p>
+          </div>
+          <div className="ewallet-persona-list">
+            {eWalletPersonas.map((persona) => (
+              <article className="ewallet-persona-card" key={persona.name}>
+                <span>{persona.age}</span>
+                <strong>{persona.name}</strong>
+                <p>{persona.type}</p>
+              </article>
+            ))}
+          </div>
+        </FadeIn>
+      </section>
+
+      <section className="ewallet-section ewallet-problem-section">
+        <EWalletSectionHeading eyebrow="Old Version Analysis / Design Purpose" title="旧版解析与设计目标">
+          <p>
+            旧版问题集中在业务承接、品牌表达、用户效率和视觉语言四个维度。设计目标从视觉层、交互层、架构层同时推进，让信息层级、操作路径和品牌表达更清晰。
+          </p>
+        </EWalletSectionHeading>
+
+        <div className="ewallet-problem-goal-grid">
+          <div className="ewallet-problem-list">
+            {eWalletProblemGroups.map((group, index) => (
+              <FadeIn className="ewallet-problem-card" delay={index * 0.04} key={group.title}>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <h3>{group.title}</h3>
+                <ul>
+                  {group.points.map((point) => (
+                    <li key={point}>{point}</li>
+                  ))}
+                </ul>
+              </FadeIn>
+            ))}
+          </div>
+
+          <FadeIn className="ewallet-goal-panel" delay={0.08}>
+            {eWalletDesignGoals.map((goal) => (
+              <article key={goal.title}>
+                <h3>{goal.title}</h3>
+                <p>{goal.body}</p>
+              </article>
+            ))}
+          </FadeIn>
+        </div>
+      </section>
+
+      <section className="ewallet-section ewallet-brand-section">
+        <div className="ewallet-brand-grid">
+          <EWalletSectionHeading eyebrow="Brand Delivery" title="品牌传递">
+            <p>
+              品牌传递是旧版设计中缺失的一环。为了缓解产品推广中品牌知名度和信任度不足的问题，页面需要在不同场景持续展示品牌要素，强化用户认知和记忆。
+            </p>
+          </EWalletSectionHeading>
+
+          <FadeIn className="ewallet-brand-image" delay={0.08}>
+            <img src={eWalletPageUrls[3]} alt="E钱包 APP 品牌传递" loading="lazy" />
+          </FadeIn>
+        </div>
+
+        <div className="ewallet-brand-card-grid">
+          {eWalletBrandDelivery.map((item, index) => (
+            <FadeIn className="ewallet-brand-card" delay={index * 0.04} key={item.title}>
               <span>{String(index + 1).padStart(2, '0')}</span>
               <h3>{item.title}</h3>
               <p>{item.body}</p>
@@ -807,71 +1042,89 @@ function EWalletCasePage({ onOpenContact, project }: { onOpenContact: () => void
         </div>
       </section>
 
-      <section className="efund-case-band">
-        <div className="efund-system-band">
-          <FadeIn className="efund-system-copy">
-            <p className="efund-case-kicker">Style Definition</p>
-            <h2>品牌视觉系统</h2>
-            <p>
-              在易方达品牌规范基础上，提高蓝色饱和度，配合辅助青与辅助黄，让界面保持母品牌基因，同时更轻盈、更年轻。
-            </p>
+      <section className="ewallet-section ewallet-style-section">
+        <EWalletSectionHeading eyebrow="Style Definition" title="风格定义">
+          <p>
+            整体焕新升级后，界面采用更时尚、更轻盈的视觉语言，同时让页面结构与功能布局更加清晰。
+          </p>
+        </EWalletSectionHeading>
+
+        <div className="ewallet-style-grid">
+          <FadeIn className="ewallet-style-card ewallet-color-panel">
+            <h3>颜色规范</h3>
+            <div>
+              {eWalletColorTokens.map((item) => (
+                <article className="ewallet-color-token" key={item.value}>
+                  <span style={{ background: item.color }} />
+                  <strong>{item.value}</strong>
+                  <p>{item.label}</p>
+                </article>
+              ))}
+            </div>
           </FadeIn>
 
-          <FadeIn className="efund-token-panel" delay={0.08}>
-            {eWalletColors.map((item) => (
-              <div className="efund-color-token" key={item.value}>
-                <span style={{ background: item.color }} />
+          <FadeIn className="ewallet-style-card" delay={0.04}>
+            <h3>字体规范</h3>
+            {eWalletTypography.map((item) => (
+              <article className="ewallet-type-token" key={item.label}>
+                <span>{item.label}</span>
                 <strong>{item.value}</strong>
-                <em>{item.label}</em>
-              </div>
+              </article>
             ))}
           </FadeIn>
+
+          <FadeIn className="ewallet-style-card" delay={0.08}>
+            <h3>网格布局</h3>
+            <ul>
+              {eWalletGridRules.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </FadeIn>
+
+          <FadeIn className="ewallet-style-card" delay={0.12}>
+            <h3>图形体系</h3>
+            <div className="ewallet-tag-cloud">
+              {eWalletGraphicSystem.map((item) => (
+                <span key={item}>{item}</span>
+              ))}
+            </div>
+          </FadeIn>
         </div>
       </section>
 
-      <section className="efund-case-band">
-        <FadeIn className="efund-section-intro">
-          <p className="efund-case-kicker">Interface Presentation</p>
-          <h2>核心界面展示</h2>
-          <p>重点展示首页、基金页、基金详情和我的页面的结构升级、信息层级和资产管理体验。</p>
-        </FadeIn>
+      <section className="ewallet-section ewallet-interface-section">
+        <EWalletSectionHeading eyebrow="Interface Presentation" title="核心界面展示">
+          <p>把 PDF 中的界面讲解重排为可阅读的网页卡片，截图用于展示界面效果，文字要点单独放大呈现。</p>
+        </EWalletSectionHeading>
 
-        <div className="efund-showcase-grid">
-          {[
-            { label: 'Home Page', image: eWalletPageUrls[5] },
-            { label: 'Fund / Fund Details', image: eWalletPageUrls[6] },
-            { label: 'My Page', image: eWalletPageUrls[7] },
-            { label: 'Style System', image: eWalletPageUrls[4] },
-          ].map((item, index) => (
-            <FadeIn className="efund-showcase-frame" delay={(index % 2) * 0.06} key={item.label}>
-              <img src={item.image} alt={`E钱包 APP ${item.label}`} loading="lazy" />
-              <span>{item.label}</span>
-            </FadeIn>
-          ))}
-        </div>
-      </section>
-
-      <section className="efund-case-band">
-        <FadeIn className="efund-section-intro">
-          <p className="efund-case-kicker">Full Case Pages</p>
-          <h2>完整案例页面</h2>
-          <p>保留 PDF 的 8 个原始章节画面，作为网页案例的补充浏览内容。</p>
-        </FadeIn>
-
-        <div className="efund-slide-grid">
-          {eWalletSlides.map((slide, index) => (
-            <FadeIn className="efund-slide-card" delay={(index % 4) * 0.04} key={slide.title}>
-              <img src={slide.image} alt={`E钱包 APP ${slide.title}`} loading="lazy" />
-              <div>
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                <strong>{slide.title}</strong>
+        <div className="ewallet-interface-stack">
+          {eWalletInterfaces.map((item, index) => (
+            <FadeIn
+              className={`ewallet-interface-card${index % 2 === 1 ? ' ewallet-interface-card-reverse' : ''}`}
+              delay={(index % 2) * 0.05}
+              key={item.title}
+            >
+              <div className="ewallet-interface-visual">
+                <img src={item.image} alt={`E钱包 APP ${item.title}`} loading="lazy" />
+                <span>{item.label}</span>
+              </div>
+              <div className="ewallet-interface-copy">
+                <p className="ewallet-kicker">{item.label}</p>
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+                <ul>
+                  {item.points.map((point) => (
+                    <li key={point}>{point}</li>
+                  ))}
+                </ul>
               </div>
             </FadeIn>
           ))}
         </div>
       </section>
 
-      <footer className="efund-case-footer">
+      <footer className="ewallet-footer">
         <a
           href={getProjectsHomePath()}
           onClick={(event) => handleInternalRouteClick(event, getProjectsHomePath())}
