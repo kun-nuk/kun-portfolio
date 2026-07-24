@@ -15,6 +15,9 @@ const launchScreenUrl = assetUrl('assets/projects/efundgpt-app/launch-screen.png
 const eWalletPageUrls = Array.from({ length: 8 }, (_, index) =>
   assetUrl(`assets/projects/e-wallet-app/page-${index + 1}.jpg`),
 );
+const eWalletCoverOverviewUrl = assetUrl('assets/projects/e-wallet-app/cover-overview.png');
+const eWalletDesignPurposeUrl = assetUrl('assets/projects/e-wallet-app/design-purpose.png');
+const eWalletInterfaceShowcaseUrl = assetUrl('assets/projects/e-wallet-app/interface-showcase.png');
 
 const contactDetails = [
   { label: '微信', value: 'KunnnnuK' },
@@ -142,7 +145,7 @@ const projects: Project[] = [
     role: 'UX/UI Designer',
     year: '2026',
     scope: ['App Redesign', 'Finance UI', 'Design System'],
-    coverImages: [eWalletPageUrls[6], eWalletPageUrls[7], eWalletPageUrls[5]],
+    coverImages: [eWalletDesignPurposeUrl, eWalletInterfaceShowcaseUrl, eWalletCoverOverviewUrl],
     detailImages: [
       eWalletPageUrls[5],
       eWalletPageUrls[0],
