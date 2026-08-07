@@ -48,6 +48,8 @@ type LightRayUniforms = {
 };
 
 const DEFAULT_COLOR = '#ffffff';
+const MAX_RENDER_DPR = 1.25;
+const FRAME_INTERVAL_MS = 1000 / 30;
 
 function hexToRgb(hex: string) {
   const match = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -171,7 +173,7 @@ export default function LightRays({
 
       const renderer = new Renderer({
         alpha: true,
-        dpr: Math.min(window.devicePixelRatio, 2),
+        dpr: Math.min(window.devicePixelRatio, MAX_RENDER_DPR),
       });
       rendererRef.current = renderer;
 
@@ -320,7 +322,7 @@ void main() {
           return;
         }
 
-        renderer.dpr = Math.min(window.devicePixelRatio, 2);
+        renderer.dpr = Math.min(window.devicePixelRatio, MAX_RENDER_DPR);
 
         const { clientWidth, clientHeight } = containerRef.current;
         renderer.setSize(clientWidth, clientHeight);
@@ -336,11 +338,22 @@ void main() {
         uniforms.rayDir.value = dir;
       };
 
+      let lastRenderTime = 0;
+
       const loop = (time: number) => {
         if (!rendererRef.current || !uniformsRef.current || !meshRef.current) {
           return;
         }
 
+        if (
+          document.visibilityState !== 'visible' ||
+          (lastRenderTime > 0 && time - lastRenderTime < FRAME_INTERVAL_MS)
+        ) {
+          animationIdRef.current = requestAnimationFrame(loop);
+          return;
+        }
+
+        lastRenderTime = time;
         uniforms.iTime.value = time * 0.001;
 
         if (followMouse && mouseInfluence > 0) {

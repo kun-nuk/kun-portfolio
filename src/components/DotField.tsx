@@ -117,11 +117,32 @@ const DotField = memo(function DotField({
     }
 
     const context = ctx;
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.35);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.15);
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const observedElement = canvas.parentElement;
     let resizeTimer = 0;
     let isRunning = false;
+    let isVisible = !observedElement || typeof IntersectionObserver === 'undefined';
+    let pageVisible = document.visibilityState === 'visible';
+
+    function canRender() {
+      return isVisible && pageVisible && !motionQuery.matches;
+    }
+
+    function stopTick() {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = 0;
+      }
+
+      isRunning = false;
+    }
 
     function scheduleTick() {
+      if (!canRender()) {
+        return;
+      }
+
       if (!isRunning) {
         isRunning = true;
         rafRef.current = requestAnimationFrame(tick);
@@ -151,6 +172,10 @@ const DotField = memo(function DotField({
     }
 
     function doResize() {
+      if (!canRender()) {
+        return;
+      }
+
       const parent = canvas?.parentElement;
 
       if (!parent) {
@@ -183,7 +208,29 @@ const DotField = memo(function DotField({
       resizeTimer = window.setTimeout(doResize, 100);
     }
 
+    function onVisibilityChange() {
+      pageVisible = document.visibilityState === 'visible';
+
+      if (pageVisible) {
+        doResize();
+      } else {
+        stopTick();
+      }
+    }
+
+    function onMotionPreferenceChange() {
+      if (motionQuery.matches) {
+        stopTick();
+      } else {
+        doResize();
+      }
+    }
+
     function onMouseMove(event: MouseEvent) {
+      if (!canRender()) {
+        return;
+      }
+
       const s = sizeRef.current;
       const m = mouseRef.current;
       const nextX = event.pageX - s.offsetX;
@@ -331,9 +378,32 @@ const DotField = memo(function DotField({
       rafRef.current = requestAnimationFrame(tick);
     }
 
-    doResize();
+    const observer =
+      observedElement && typeof IntersectionObserver !== 'undefined'
+        ? new IntersectionObserver(
+            (entries) => {
+              isVisible = entries.some((entry) => entry.isIntersecting);
+
+              if (isVisible) {
+                doResize();
+              } else {
+                stopTick();
+              }
+            },
+            { rootMargin: '160px 0px', threshold: 0 },
+          )
+        : null;
+
+    if (observer && observedElement) {
+      observer.observe(observedElement);
+    } else {
+      doResize();
+    }
+
     window.addEventListener('resize', resize);
     window.addEventListener('mousemove', onMouseMove, { passive: true });
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    motionQuery.addEventListener('change', onMotionPreferenceChange);
 
     rebuildRef.current = () => {
       const { w, h } = sizeRef.current;
@@ -345,10 +415,13 @@ const DotField = memo(function DotField({
     };
 
     return () => {
-      cancelAnimationFrame(rafRef.current);
+      stopTick();
+      observer?.disconnect();
       window.clearTimeout(resizeTimer);
       window.removeEventListener('resize', resize);
       window.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      motionQuery.removeEventListener('change', onMotionPreferenceChange);
     };
   }, []);
 

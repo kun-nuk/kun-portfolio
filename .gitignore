@@ -6,3 +6,11 @@ node_modules/
 *.tgz
 *.zip
 .wrangler/
+
+# Local preview and review artifacts
+/*-preview*.html
+/*-preview*.png
+/ewallet-check*.png
+/ewallet-local-*-check*.png
+/mastergo-link-check.png
+.originkit/

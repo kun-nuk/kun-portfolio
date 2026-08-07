@@ -1,0 +1,98 @@
+#projects .project-card.project-link-card {
+  --edge-proximity: 0;
+  --cursor-angle: 45deg;
+  --edge-sensitivity: 24;
+  --color-sensitivity: calc(var(--edge-sensitivity) + 18);
+  --glow-padding: 34px;
+
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+  border-color: rgba(215, 231, 245, 0.72);
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+#projects .project-card.project-link-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+#projects .project-card.project-link-card::before,
+#projects .project-card.project-link-card::after {
+  content: "";
+  position: absolute;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+}
+
+#projects .project-card.project-link-card::before {
+  inset: -2px;
+  z-index: 2;
+  padding: 2px;
+  background:
+    radial-gradient(at 80% 55%, #c084fc 0, transparent 50%),
+    radial-gradient(at 69% 34%, #f472b6 0, transparent 50%),
+    radial-gradient(at 8% 6%, #38bdf8 0, transparent 50%),
+    radial-gradient(at 41% 38%, #60a5fa 0, transparent 50%),
+    linear-gradient(120deg, #38bdf8, #c084fc, #f472b6);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+#projects .project-card.project-link-card::after {
+  inset: calc(var(--glow-padding) * -1);
+  z-index: -1;
+  background:
+    conic-gradient(
+      from var(--cursor-angle) at center,
+      transparent 0 39%,
+      rgba(56, 189, 248, 0.42) 45%,
+      rgba(192, 132, 252, 0.5) 50%,
+      rgba(244, 114, 182, 0.36) 55%,
+      transparent 61% 100%
+    );
+  filter: blur(18px);
+  mix-blend-mode: screen;
+}
+
+#projects .project-card.project-link-card:hover {
+  border-color: rgba(219, 239, 255, 0.98);
+  box-shadow:
+    0 0 0 1px rgba(56, 189, 248, 0.28),
+    0 24px 80px rgba(14, 165, 233, 0.14),
+    0 0 38px rgba(192, 132, 252, 0.12);
+}
+
+#projects .project-card.project-link-card:hover::before {
+  opacity: clamp(
+    0,
+    calc((var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity))),
+    1
+  );
+}
+
+#projects .project-card.project-link-card:hover::after {
+  opacity: clamp(
+    0,
+    calc((var(--edge-proximity) - var(--edge-sensitivity)) / (100 - var(--edge-sensitivity))),
+    1
+  );
+}
+
+@media (hover: none) {
+  #projects .project-card.project-link-card::before,
+  #projects .project-card.project-link-card::after {
+    display: none;
+  }
+}

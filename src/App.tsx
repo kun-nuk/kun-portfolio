@@ -1,10 +1,21 @@
-import { motion } from 'framer-motion';
-import { X } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
+import { ArrowLeft, X, ZoomIn, ZoomOut } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties, MouseEvent as ReactMouseEvent, ReactNode, RefObject } from 'react';
 
 import DotField from './components/DotField';
+import BorderGlow from './components/BorderGlow';
 import LightRays from './components/LightRays';
+import SpotlightCard from './components/SpotlightCard';
+
+const focusableSelector = [
+  'a[href]',
+  'button:not([disabled])',
+  'textarea:not([disabled])',
+  'input:not([disabled])',
+  'select:not([disabled])',
+  '[tabindex]:not([tabindex="-1"])',
+].join(',');
 
 function assetUrl(path: string) {
   return `${import.meta.env.BASE_URL}${path.replace(/^\/+/, '')}`;
@@ -15,9 +26,11 @@ const launchScreenUrl = assetUrl('assets/projects/efundgpt-app/launch-screen.png
 const eWalletPageUrls = Array.from({ length: 8 }, (_, index) =>
   assetUrl(`assets/projects/e-wallet-app/page-${index + 1}.jpg`),
 );
-const eWalletCoverOverviewUrl = assetUrl('assets/projects/e-wallet-app/cover-overview.png');
-const eWalletDesignPurposeUrl = assetUrl('assets/projects/e-wallet-app/design-purpose.png');
 const eWalletInterfaceShowcaseUrl = assetUrl('assets/projects/e-wallet-app/interface-showcase.png');
+const eWalletHomeCoverNewUrl = assetUrl('assets/projects/e-wallet-app/ewallet-home-cover-new.png');
+const eWalletStyleDefinitionUrl = assetUrl(
+  'assets/projects/e-wallet-app/ewallet-style-definition.png',
+);
 const eWalletHeroHomeScreenUrl = assetUrl('assets/projects/e-wallet-app/hero-home-screen.png');
 const eWalletBrandDeliveryOverviewUrl = assetUrl('assets/projects/e-wallet-app/brand-delivery-overview.jpg');
 const eWalletBrandGenePanelUrl = assetUrl('assets/projects/e-wallet-app/brand-gene-panel.png');
@@ -28,6 +41,18 @@ const eWalletGraphicSystemPanelUrl = assetUrl('assets/projects/e-wallet-app/grap
 const eWalletPersonaZhangUrl = assetUrl('assets/projects/e-wallet-app/persona-zhang.png');
 const eWalletPersonaChenUrl = assetUrl('assets/projects/e-wallet-app/persona-chen.png');
 const eWalletPersonaCaiUrl = assetUrl('assets/projects/e-wallet-app/persona-cai.png');
+const discoverPageUrls = Array.from({ length: 12 }, (_, index) =>
+  assetUrl(`assets/projects/yifaxian-platform/pdf/page-${String(index + 1).padStart(2, '0')}.jpg`),
+);
+const discoverComponentSpecUrl = assetUrl(
+  'assets/projects/yifaxian-platform/mastergo/ws-component-spec.png',
+);
+const discoverProjectDisassemblyUrl = assetUrl(
+  'assets/projects/yifaxian-platform/mastergo/ws-project-disassembly-detail.png',
+);
+const discoverProjectDisassemblyCoverUrl = assetUrl(
+  'assets/projects/yifaxian-platform/mastergo/ws-project-disassembly-cover.jpg',
+);
 
 const contactDetails = [
   { label: '微信', value: 'KunnnnuK' },
@@ -36,24 +61,78 @@ const contactDetails = [
 ];
 
 const marqueeImages = [
-  assetUrl('assets/projects/efundgpt-app/home-cover.png'),
-  assetUrl('assets/projects/efundgpt-app/home-detail.png'),
-  assetUrl('assets/projects/efundgpt-app/home-interface.png'),
-  eWalletPageUrls[5],
-  eWalletPageUrls[6],
-  eWalletPageUrls[7],
-  assetUrl('assets/projects/solaris-digital/cover-1.webp'),
-  assetUrl('assets/projects/solaris-digital/cover-2.webp'),
-  assetUrl('assets/projects/solaris-digital/cover-3.webp'),
-  assetUrl('assets/efundgpt/page-1.png'),
-  assetUrl('assets/efundgpt/page-2.png'),
-  assetUrl('assets/efundgpt/page-3.png'),
-  assetUrl('assets/projects/efundgpt-app/home-interface.png'),
-  assetUrl('assets/projects/efundgpt-app/home-detail.png'),
-  launchScreenUrl,
-  eWalletPageUrls[5],
-  assetUrl('assets/projects/solaris-digital/cover-1.webp'),
-  assetUrl('assets/projects/solaris-digital/cover-2.webp'),
+  {
+    src: assetUrl('assets/projects/efundgpt-app/home-cover.png'),
+    alt: 'EFundGPT 首页封面设计',
+  },
+  {
+    src: assetUrl('assets/projects/efundgpt-app/home-detail.png'),
+    alt: 'EFundGPT 首页详情模块设计',
+  },
+  {
+    src: assetUrl('assets/projects/efundgpt-app/home-interface.png'),
+    alt: 'EFundGPT 移动端界面总览',
+  },
+  {
+    src: eWalletPageUrls[5],
+    alt: 'E 钱包首页改版界面',
+  },
+  {
+    src: eWalletPageUrls[6],
+    alt: 'E 钱包基金页面与基金详情界面',
+  },
+  {
+    src: eWalletPageUrls[7],
+    alt: 'E 钱包我的页面与资产管理界面',
+  },
+  {
+    src: discoverPageUrls[0],
+    alt: '易发现平台项目封面',
+  },
+  {
+    src: discoverPageUrls[5],
+    alt: '易发现平台设计流程页面',
+  },
+  {
+    src: discoverPageUrls[11],
+    alt: '易发现平台深浅色界面展示',
+  },
+  {
+    src: assetUrl('assets/efundgpt/page-1.png'),
+    alt: 'EFundGPT 项目展示第 1 页',
+  },
+  {
+    src: assetUrl('assets/efundgpt/page-2.png'),
+    alt: 'EFundGPT 项目展示第 2 页',
+  },
+  {
+    src: assetUrl('assets/efundgpt/page-3.png'),
+    alt: 'EFundGPT 项目展示第 3 页',
+  },
+  {
+    src: assetUrl('assets/projects/efundgpt-app/home-interface.png'),
+    alt: 'EFundGPT 移动端界面总览',
+  },
+  {
+    src: assetUrl('assets/projects/efundgpt-app/home-detail.png'),
+    alt: 'EFundGPT 首页详情模块设计',
+  },
+  {
+    src: launchScreenUrl,
+    alt: 'EFundGPT 启动页设计',
+  },
+  {
+    src: eWalletPageUrls[5],
+    alt: 'E 钱包首页改版界面',
+  },
+  {
+    src: discoverPageUrls[9],
+    alt: '易发现平台工具栏与搜索入口界面',
+  },
+  {
+    src: discoverPageUrls[10],
+    alt: '易发现平台组件与数据看板界面',
+  },
 ];
 
 type Decoration = {
@@ -115,6 +194,13 @@ type Project = {
   }>;
 };
 
+type EWalletImagePreview = {
+  image: string;
+  label?: string;
+  title: string;
+  projectName?: string;
+};
+
 const projects: Project[] = [
   {
     number: '01',
@@ -122,13 +208,13 @@ const projects: Project[] = [
     slug: 'efundgpt-app',
     category: 'App design',
     summary:
-      'A mobile AI finance assistant experience prepared as a visual case-study shell for future project copy.',
+      '移动端 AI 金融助手体验设计，围绕启动页、首页信息架构与资产内容展示建立清晰的产品视觉方向。',
     role: 'UX/UI Designer',
     year: '2026',
     scope: ['App Design', 'AI Experience', 'Finance UI'],
     coverImages: [
-      assetUrl('assets/projects/efundgpt-app/home-interface.png'),
       assetUrl('assets/projects/efundgpt-app/home-cover.png'),
+      assetUrl('assets/projects/efundgpt-app/home-interface.png'),
       launchScreenUrl,
     ],
     detailImages: [
@@ -155,7 +241,7 @@ const projects: Project[] = [
     role: 'UX/UI Designer',
     year: '2026',
     scope: ['App Redesign', 'Finance UI', 'Design System'],
-    coverImages: [eWalletDesignPurposeUrl, eWalletInterfaceShowcaseUrl, eWalletCoverOverviewUrl],
+    coverImages: [eWalletStyleDefinitionUrl, eWalletInterfaceShowcaseUrl, eWalletHomeCoverNewUrl],
     detailImages: [
       eWalletPageUrls[5],
       eWalletPageUrls[0],
@@ -169,23 +255,33 @@ const projects: Project[] = [
   },
   {
     number: '03',
-    name: 'Solaris Digital',
-    slug: 'solaris-digital',
-    category: 'Client',
+    name: '易发现平台',
+    slug: 'yifaxian-platform',
+    legacySlugs: ['solaris-digital'],
+    category: 'WEB DESIGN',
     summary:
-      'A modern digital product website direction reserved for a future client case study.',
+      '易发现是为企业员工打造的一站式工作平台，整合企业内部数据、场景和信息，统一功能入口、统一账户体系以及统一使用体验。',
     role: 'UX/UI Designer',
     year: '2026',
-    scope: ['Web Design', 'Product Site', 'Visual System'],
+    scope: ['Web Design', 'Enterprise Platform', 'Design System'],
     coverImages: [
-      assetUrl('assets/projects/solaris-digital/cover-1.webp'),
-      assetUrl('assets/projects/solaris-digital/cover-2.webp'),
-      assetUrl('assets/projects/solaris-digital/cover-3.webp'),
+      discoverProjectDisassemblyUrl,
+      discoverProjectDisassemblyCoverUrl,
+      discoverPageUrls[0],
     ],
     detailImages: [
-      assetUrl('assets/projects/solaris-digital/cover-1.webp'),
-      assetUrl('assets/projects/solaris-digital/cover-2.webp'),
-      assetUrl('assets/projects/solaris-digital/cover-3.webp'),
+      discoverPageUrls[0],
+      discoverPageUrls[1],
+      discoverPageUrls[2],
+      discoverPageUrls[3],
+      discoverPageUrls[4],
+      discoverPageUrls[5],
+      discoverPageUrls[6],
+      discoverPageUrls[7],
+      discoverPageUrls[8],
+      discoverPageUrls[9],
+      discoverPageUrls[10],
+      discoverPageUrls[11],
     ],
   },
 ];
@@ -210,7 +306,7 @@ const eWalletProcess = [
 
 const eWalletResearchStats = [
   {
-    value: '51% / 49%',
+    value: '51% : 49%',
     label: '性别分布',
     body: '女性 51%，男性 49%，男女用户比例基本均衡。',
   },
@@ -386,6 +482,142 @@ const eWalletInterfaces = [
   },
 ];
 
+const discoverProcess = [
+  {
+    phase: '01',
+    title: '调研',
+    body: '项目前期与项目组成员一同面向客户，与客户进行访谈，明确用户需求，了解用户喜好。',
+  },
+  {
+    phase: '02',
+    title: '需求',
+    body: '与业务、产品确认主要功能及信息架构，补充完善产品交互设计方案。',
+  },
+  {
+    phase: '03',
+    title: '目标',
+    body: '优化产品体验，统一视觉风格，建立系统设计规范。',
+  },
+  {
+    phase: '04',
+    title: '设计',
+    body: '优化交互设计，落地界面视觉设计。',
+  },
+  {
+    phase: '05',
+    title: '输出',
+    body: '对接研发及测试，对项目进行设计验收和反馈收集。',
+  },
+];
+
+const discoverUserQuotes = [
+  '每天都需要打开很多系统，在不同系统中切换。',
+  '总是找不到操作在哪里。',
+  '功能操作链路过长，导致信息传递不及时。',
+  '每次都需要在一堆文字数据里找我想要的内容。',
+  '系统界面看着有点老旧。',
+];
+
+const discoverPainPoints = [
+  {
+    code: 'Q1',
+    title: '风格规范不统一',
+    body: '未制定统一的组件规范，集成多套组件样式状态，造成产品整体风格、交互不统一。',
+  },
+  {
+    code: 'Q2',
+    title: '信息架构不清晰',
+    body: '信息内容平铺堆叠，未做明确的信息区域划分与功能合并，造成用户的信息查找困难。',
+  },
+  {
+    code: 'Q3',
+    title: '功能信息分布分散',
+    body: '用户需要在多个系统中寻找相应的数据信息，切换系统与加载界面会耗费大量时间。',
+  },
+];
+
+const discoverGoals = [
+  {
+    layer: '表现层',
+    title: '强化产品属性',
+    points: [
+      '搭建组件库规范：使用组件搭建界面，保持页面交互一致性，减少用户学习成本。',
+      'UI 视觉升级：重新定义产品整体视觉风格，打造产品专属风格。',
+    ],
+  },
+  {
+    layer: '框架层',
+    title: '提升用户体验',
+    points: [
+      '模块划分：功能拆解，划分页面区块并调整信息结构。',
+      '功能合并：相同能力合并，减少能力分散，帮助用户快速高效获取信息。',
+    ],
+  },
+  {
+    layer: '战略层',
+    title: '减少路径跳转',
+    points: [
+      '搭建场景组件：提炼原有界面重要信息，通过窗口化方式让用户随时监控内容。',
+      '功能组件侧边栏：在页面右侧新增轻量工具栏，方便用户调用其他系统功能信息。',
+    ],
+  },
+];
+
+const discoverColorTokens = [
+  { label: '品牌色 1', value: '#0088FF', color: '#0088FF' },
+  { label: '品牌色 2', value: '#1EB9E1', color: '#1EB9E1' },
+  { label: '警示', value: '#F1A000', color: '#F1A000' },
+  { label: '安全', value: '#47A550', color: '#47A550' },
+  { label: '危险', value: '#CF4A4A', color: '#CF4A4A' },
+  { label: '辅助', value: '#CFDAE6', color: '#CFDAE6' },
+];
+
+const discoverWorkbenchLayers = [
+  {
+    title: '信息层面',
+    body: '通过不同维度对事项进行划分，并通过标签、字体颜色对重点信息进行强调，方便用户快速获取信息。',
+  },
+  {
+    title: '数据层面',
+    body: '把数据信息以可视化形式展示出来，让使用者清晰查看数据构成和数据趋势。',
+  },
+  {
+    title: '业务层面',
+    body: '在业务场景下组合关键指标数据、图表、列表等多种内容类型，为用户提供更全面的信息参考。',
+  },
+  {
+    title: '颗粒度调整',
+    body: '用户可自行调整组件颗粒度大小，从小颗粒度提醒到大颗粒度分析组件，适配不同工作深度。',
+  },
+];
+
+const discoverInterfaces: EWalletImagePreview[] = [
+  {
+    label: 'Design Cycle',
+    title: '设计流程',
+    image: discoverPageUrls[1],
+    projectName: '易发现平台',
+  },
+  {
+    label: 'Workspace',
+    title: '工作台组件拆解',
+    image: discoverPageUrls[7],
+    projectName: '易发现平台',
+  },
+  {
+    label: 'Toolbar / Search',
+    title: '工具栏与搜索入口',
+    image: discoverPageUrls[9],
+    projectName: '易发现平台',
+  },
+  {
+    label: 'Light / Dark Mode',
+    title: '同异视觉形象',
+    image: discoverPageUrls[11],
+    projectName: '易发现平台',
+  },
+];
+
 type FadeInProps = {
   children: ReactNode;
   className?: string;
@@ -393,6 +625,12 @@ type FadeInProps = {
 };
 
 function FadeIn({ children, className = '', delay = 0 }: FadeInProps) {
+  const prefersReducedMotion = useReducedMotion();
+
+  if (prefersReducedMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div
       className={className}
@@ -427,6 +665,9 @@ type ContactModalProps = {
 
 function ContactModal({ isOpen, onClose }: ContactModalProps) {
   const [copiedLabel, setCopiedLabel] = useState<string | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (!isOpen) {
@@ -436,16 +677,44 @@ function ContactModal({ isOpen, onClose }: ContactModalProps) {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         onClose();
+        return;
+      }
+
+      if (event.key !== 'Tab') {
+        return;
+      }
+
+      const focusableElements = Array.from(
+        modalRef.current?.querySelectorAll<HTMLElement>(focusableSelector) ?? [],
+      ).filter((element) => !element.hasAttribute('disabled') && element.offsetParent !== null);
+
+      if (focusableElements.length === 0) {
+        event.preventDefault();
+        return;
+      }
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
       }
     };
     const originalOverflow = document.body.style.overflow;
+    returnFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
 
     document.body.style.overflow = 'hidden';
     window.addEventListener('keydown', handleKeyDown);
+    window.setTimeout(() => closeButtonRef.current?.focus(), 0);
 
     return () => {
       document.body.style.overflow = originalOverflow;
       window.removeEventListener('keydown', handleKeyDown);
+      returnFocusRef.current?.focus();
     };
   }, [isOpen, onClose]);
 
@@ -486,10 +755,17 @@ function ContactModal({ isOpen, onClose }: ContactModalProps) {
         aria-labelledby="contact-modal-title"
         aria-modal="true"
         className="contact-modal"
+        ref={modalRef}
         role="dialog"
         onClick={(event) => event.stopPropagation()}
       >
-        <button className="contact-modal-close" type="button" aria-label="关闭联系方式弹窗" onClick={onClose}>
+        <button
+          className="contact-modal-close"
+          type="button"
+          aria-label="关闭联系方式弹窗"
+          onClick={onClose}
+          ref={closeButtonRef}
+        >
           <X aria-hidden="true" />
         </button>
 
@@ -506,7 +782,11 @@ function ContactModal({ isOpen, onClose }: ContactModalProps) {
                 <span>{item.label}</span>
                 <strong>{item.value}</strong>
               </div>
-              <button type="button" onClick={() => copyValue(item.label, item.value)}>
+              <button
+                type="button"
+                aria-label={`复制${item.label}`}
+                onClick={() => copyValue(item.label, item.value)}
+              >
                 {copiedLabel === item.label ? '已复制' : '复制'}
               </button>
             </div>
@@ -527,6 +807,10 @@ function getProjectPath(project: Project) {
 
 function getProjectsHomePath() {
   return '#projects';
+}
+
+function getHomePath() {
+  return '#top';
 }
 
 function navigateTo(path: string) {
@@ -571,13 +855,21 @@ function useHeroMagnet() {
   const portraitRef = useRef<HTMLDivElement>(null);
   const portraitMotionRef = useRef<HTMLDivElement>(null);
   const dotFieldRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
+    if (prefersReducedMotion) {
+      portraitMotionRef.current?.style.setProperty('transform', 'translate3d(0, 0, 0)');
+      dotFieldRef.current?.style.setProperty('transform', 'translate3d(0, 0, 0)');
+      return undefined;
+    }
+
     let frameId = 0;
     let currentX = 0;
     let currentY = 0;
     let targetX = 0;
     let targetY = 0;
+    let isHeroVisible = true;
 
     const writeTransform = (x: number, y: number) => {
       const transform = `translate3d(${x}px, ${y}px, 0)`;
@@ -617,6 +909,10 @@ function useHeroMagnet() {
     };
 
     const handlePointerMove = (event: PointerEvent) => {
+      if (!isHeroVisible) {
+        return;
+      }
+
       const portrait = portraitRef.current;
 
       if (!portrait) {
@@ -654,17 +950,37 @@ function useHeroMagnet() {
       scheduleAnimation();
     };
 
+    const heroElement = portraitRef.current?.closest('.hero-section') ?? null;
+    const observer =
+      heroElement && typeof IntersectionObserver !== 'undefined'
+        ? new IntersectionObserver(
+            (entries) => {
+              isHeroVisible = entries.some((entry) => entry.isIntersecting);
+
+              if (!isHeroVisible) {
+                resetMagnet();
+              }
+            },
+            { threshold: 0 },
+          )
+        : null;
+
+    if (observer && heroElement) {
+      observer.observe(heroElement);
+    }
+
     window.addEventListener('pointermove', handlePointerMove, { passive: true });
     window.addEventListener('blur', resetMagnet);
     window.addEventListener('pointerleave', resetMagnet);
 
     return () => {
       cancelAnimationFrame(frameId);
+      observer?.disconnect();
       window.removeEventListener('pointermove', handlePointerMove);
       window.removeEventListener('blur', resetMagnet);
       window.removeEventListener('pointerleave', resetMagnet);
     };
-  }, []);
+  }, [prefersReducedMotion]);
 
   return { dotFieldRef, portraitMotionRef, portraitRef };
 }
@@ -681,6 +997,36 @@ function MagneticPortrait({ portraitMotionRef, portraitRef }: MagneticPortraitPr
         <div className="portrait-glow" />
         <img src={portraitUrl} alt="KUN UX/UI Designer portrait" draggable={false} />
       </div>
+    </div>
+  );
+}
+
+function SiteNav() {
+  return (
+    <SpotlightCard className="hero-nav-wrap" spotlightColor="rgba(180, 196, 210, 0.08)">
+      <nav className="hero-nav" aria-label="Primary navigation">
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </SpotlightCard>
+  );
+}
+
+function EWalletCaseNav() {
+  return (
+    <div className="ewallet-case-nav-wrap">
+      <nav className="ewallet-case-nav" aria-label="Case navigation">
+        <span className="ewallet-case-nav-brand">
+          <span aria-hidden="true" />
+          KUN Product Designer
+        </span>
+        <a href={getHomePath()} onClick={(event) => handleInternalRouteClick(event, getHomePath())}>
+          <ArrowLeft aria-hidden="true" size={18} strokeWidth={2.4} />
+          返回首页
+        </a>
+      </nav>
     </div>
   );
 }
@@ -705,15 +1051,6 @@ function HeroSection({ onOpenContact }: { onOpenContact: () => void }) {
         />
       </div>
 
-      <FadeIn className="hero-nav-wrap">
-        <nav className="hero-nav" aria-label="Primary navigation">
-          <a href="#about">About</a>
-          <a href="#price">Price</a>
-          <a href="#projects">Projects</a>
-          <a href="#contact">Contact</a>
-        </nav>
-      </FadeIn>
-
       <div className="hero-title-shell">
         <h1 className="hero-heading">Hi, i&apos;m KUN</h1>
       </div>
@@ -721,7 +1058,7 @@ function HeroSection({ onOpenContact }: { onOpenContact: () => void }) {
       <MagneticPortrait portraitMotionRef={portraitMotionRef} portraitRef={portraitRef} />
 
       <div className="hero-bottom">
-        <p>UX/UI Designer</p>
+        <p>UX/UI Designer for app, web and finance product systems</p>
         <ContactButton onOpenContact={onOpenContact} />
       </div>
     </section>
@@ -741,22 +1078,32 @@ function MarqueeSection() {
 }
 
 type MarqueeRowProps = {
-  images: string[];
+  images: Array<{
+    alt: string;
+    src: string;
+  }>;
   direction: 'forward' | 'reverse';
 };
 
 function MarqueeRow({ images, direction }: MarqueeRowProps) {
+  const repeatedImages = [...images, ...images];
+
   return (
     <div className="marquee-window">
       <div className={`marquee-track marquee-${direction}`}>
-        {[...images, ...images].map((src, index) => (
-          <img
-            key={`${src}-${index}`}
-            src={src}
-            alt="Motion website preview"
-            loading="lazy"
-          />
-        ))}
+        {repeatedImages.map((image, index) => {
+          const isDuplicate = index >= images.length;
+
+          return (
+            <img
+              aria-hidden={isDuplicate ? 'true' : undefined}
+              key={`${image.src}-${index}`}
+              src={image.src}
+              alt={isDuplicate ? '' : image.alt}
+              loading="lazy"
+            />
+          );
+        })}
       </div>
     </div>
   );
@@ -788,7 +1135,7 @@ function AboutSection({ onOpenContact }: { onOpenContact: () => void }) {
 
 function ServicesSection() {
   return (
-    <section className="services-section" id="price">
+    <section className="services-section" id="services">
       <FadeIn>
         <h2 className="section-heading dark-heading">Services</h2>
       </FadeIn>
@@ -812,42 +1159,55 @@ function ProjectsSection() {
   return (
     <section className="projects-section" id="projects">
       <FadeIn>
-        <h2 className="section-heading gradient-heading">Project</h2>
+        <h2 className="section-heading gradient-heading">Projects</h2>
       </FadeIn>
 
       <div className="project-stack">
         {projects.map((project, index) => (
-          <a
-            className="project-card project-link-card project-card-feature-left"
-            href={getProjectPath(project)}
+          <BorderGlow
+            className={`project-glow-card project-glow-card-${project.slug}`}
             key={project.number}
-            onClick={(event) => handleInternalRouteClick(event, getProjectPath(project))}
-            style={{ top: 72 + index * 24 }}
+            animated={index === 0}
+            backgroundColor="#0c0c0c"
+            borderRadius="clamp(36px, 5vw, 60px)"
+            colors={['#2d8cff', '#a56cff', '#ff4fb8']}
+            coneSpread={24}
+            edgeSensitivity={24}
+            fillOpacity={0.2}
+            glowColor="205 90 68"
+            glowIntensity={1.15}
+            glowRadius={34}
           >
-            <div className="project-card-top">
-              <div className="project-title-group">
-                <span>{project.number}</span>
-                <div>
-                  <p>{project.category}</p>
-                  <h3>{project.name}</h3>
+            <a
+              className={`project-card project-link-card project-card-feature-left project-card-${project.slug}`}
+              href={getProjectPath(project)}
+              onClick={(event) => handleInternalRouteClick(event, getProjectPath(project))}
+            >
+              <div className="project-card-top">
+                <div className="project-title-group">
+                  <span>{project.number}</span>
+                  <div>
+                    <p>{project.category}</p>
+                    <h3>{project.name}</h3>
+                  </div>
                 </div>
+                <span className="live-button">View Case</span>
               </div>
-              <span className="live-button">View Case</span>
-            </div>
 
-            <div className="project-images">
-              <div className="project-left">
-                <img src={project.coverImages[0]} alt={`${project.name} preview 1`} loading="lazy" />
-                <img src={project.coverImages[1]} alt={`${project.name} preview 2`} loading="lazy" />
+              <div className="project-images">
+                <div className="project-left">
+                  <img src={project.coverImages[0]} alt={`${project.name} preview 1`} loading="lazy" />
+                  <img src={project.coverImages[1]} alt={`${project.name} preview 2`} loading="lazy" />
+                </div>
+                <img
+                  className="project-main"
+                  src={project.coverImages[2]}
+                  alt={`${project.name} main preview`}
+                  loading="lazy"
+                />
               </div>
-              <img
-                className="project-main"
-                src={project.coverImages[2]}
-                alt={`${project.name} main preview`}
-                loading="lazy"
-              />
-            </div>
-          </a>
+            </a>
+          </BorderGlow>
         ))}
       </div>
     </section>
@@ -855,9 +1215,16 @@ function ProjectsSection() {
 }
 
 function Footer({ onOpenContact }: { onOpenContact: () => void }) {
+  const handleBackToTop = () => {
+    document.getElementById('top')?.scrollIntoView({ block: 'start' });
+  };
+
   return (
     <footer className="footer" id="contact">
-      <button type="button" onClick={onOpenContact}>Contact Me</button>
+      <div className="footer-actions">
+        <button type="button" onClick={onOpenContact}>Contact Me</button>
+        <button type="button" onClick={handleBackToTop}>Back To Top</button>
+      </div>
     </footer>
   );
 }
@@ -865,6 +1232,7 @@ function Footer({ onOpenContact }: { onOpenContact: () => void }) {
 function HomePage({ onOpenContact }: { onOpenContact: () => void }) {
   return (
     <main className="site-shell">
+      <SiteNav />
       <HeroSection onOpenContact={onOpenContact} />
       <MarqueeSection />
       <AboutSection onOpenContact={onOpenContact} />
@@ -923,28 +1291,92 @@ function EWalletBarList({
   );
 }
 
-function EWalletCasePage({ onOpenContact, project }: { onOpenContact: () => void; project: Project }) {
-  return (
-    <main className="ewallet-replica-shell">
-      <section className="ewallet-hero" id="ewallet-top">
-        <nav className="ewallet-nav" aria-label="Case navigation">
-          <a
-            href={getProjectsHomePath()}
-            onClick={(event) => handleInternalRouteClick(event, getProjectsHomePath())}
-          >
-            KUN Portfolio
-          </a>
-          <button type="button" onClick={onOpenContact}>
-            Contact
-          </button>
-        </nav>
+function EWalletImageLightbox({
+  image,
+  onClose,
+}: {
+  image: EWalletImagePreview | null;
+  onClose: () => void;
+}) {
+  const [zoom, setZoom] = useState(1);
 
+  useEffect(() => {
+    if (!image) {
+      return undefined;
+    }
+
+    setZoom(1);
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [image, onClose]);
+
+  if (!image) {
+    return null;
+  }
+
+  const zoomOut = () => {
+    setZoom((currentZoom) => Math.max(1, Number((currentZoom - 0.25).toFixed(2))));
+  };
+
+  const zoomIn = () => {
+    setZoom((currentZoom) => Math.min(2.5, Number((currentZoom + 0.25).toFixed(2))));
+  };
+
+  return (
+    <div
+      className="ewallet-image-lightbox-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${image.title}完整图片`}
+      onClick={onClose}
+    >
+      <div className="ewallet-image-lightbox" onClick={(event) => event.stopPropagation()}>
+        <div className="ewallet-image-lightbox-header ewallet-image-lightbox-header-controls-only">
+          <div className="ewallet-image-lightbox-controls">
+            <button type="button" onClick={zoomOut} aria-label="缩小图片">
+              <ZoomOut aria-hidden="true" />
+            </button>
+            <span>{Math.round(zoom * 100)}%</span>
+            <button type="button" onClick={zoomIn} aria-label="放大图片">
+              <ZoomIn aria-hidden="true" />
+            </button>
+            <button type="button" onClick={onClose} aria-label="关闭图片预览">
+              <X aria-hidden="true" />
+            </button>
+          </div>
+        </div>
+        <div className="ewallet-image-lightbox-viewport">
+          <img
+            src={image.image}
+            alt={`${image.projectName ?? 'E钱包 APP'} ${image.title}完整展示`}
+            style={{ width: `${zoom * 100}%`, maxWidth: 'none' }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EWalletCasePage({ project }: { project: Project }) {
+  const [previewImage, setPreviewImage] = useState<EWalletImagePreview | null>(null);
+
+  return (
+    <>
+      <EWalletCaseNav />
+      <main className="ewallet-replica-shell">
+      <section className="ewallet-hero" id="ewallet-top">
         <div className="ewallet-hero-grid">
           <FadeIn className="ewallet-hero-copy">
             <p className="ewallet-kicker">App Design / Finance Product Redesign</p>
             <h1>
-              <span>E钱包</span>
-              <strong>APP</strong>
+              <span>E钱包 <strong>APP</strong></span>
             </h1>
             <p>
               易方达 E 钱包 App 作为重要的直销渠道，承载产品信息展示、销售、用户资产管理等核心功能。本次案例围绕品牌升级、信息架构重组和移动端基金交易体验进行设计焕新。
@@ -971,11 +1403,26 @@ function EWalletCasePage({ onOpenContact, project }: { onOpenContact: () => void
 
         <div className="ewallet-process-grid">
           {eWalletProcess.map((item, index) => (
-            <FadeIn className="ewallet-process-card" delay={index * 0.06} key={item.phase}>
-              <span>{item.phase}</span>
-              <strong>{item.title}</strong>
-              <p>{item.body}</p>
-            </FadeIn>
+            <BorderGlow
+              animated={index === 0}
+              backgroundColor="#f7fbff"
+              borderRadius={28}
+              className="ewallet-process-glow-card"
+              colors={['#0063ba', '#1eb9e1', '#78aaff']}
+              coneSpread={24}
+              edgeSensitivity={24}
+              fillOpacity={0.2}
+              glowColor="203 100 58"
+              glowIntensity={0.8}
+              glowRadius={28}
+              key={item.phase}
+            >
+              <FadeIn className="ewallet-process-card" delay={index * 0.06}>
+                <span>{item.phase}</span>
+                <strong>{item.title}</strong>
+                <p>{item.body}</p>
+              </FadeIn>
+            </BorderGlow>
           ))}
         </div>
       </section>
@@ -1121,7 +1568,7 @@ function EWalletCasePage({ onOpenContact, project }: { onOpenContact: () => void
             </div>
           </FadeIn>
 
-          <FadeIn className="ewallet-style-card" delay={0.04}>
+          <FadeIn className="ewallet-style-card ewallet-typography-card" delay={0.04}>
             <h3>字体规范</h3>
             {eWalletTypography.map((item) => (
               <article className="ewallet-type-token" key={item.label}>
@@ -1129,6 +1576,13 @@ function EWalletCasePage({ onOpenContact, project }: { onOpenContact: () => void
                 <strong>{item.value}</strong>
               </article>
             ))}
+            <div className="ewallet-type-showcase" aria-label="字体展示">
+              <span>Aa</span>
+              <div>
+                <strong>E钱包 APP</strong>
+                <p>1234567890</p>
+              </div>
+            </div>
           </FadeIn>
 
           <FadeIn className="ewallet-style-card ewallet-style-card-with-image" delay={0.08}>
@@ -1171,8 +1625,15 @@ function EWalletCasePage({ onOpenContact, project }: { onOpenContact: () => void
               key={item.title}
             >
               <div className="ewallet-interface-visual">
-                <img src={item.image} alt={`E钱包 APP ${item.title}`} loading="lazy" />
-                <span>{item.label}</span>
+                <button
+                  type="button"
+                  className="ewallet-interface-visual-button"
+                  onClick={() => setPreviewImage(item)}
+                  aria-label={`查看${item.title}完整图片`}
+                >
+                  <img src={item.image} alt={`E钱包 APP ${item.title}`} loading="lazy" />
+                  <span>{item.label}</span>
+                </button>
               </div>
               <div className="ewallet-interface-copy">
                 <p className="ewallet-kicker">{item.label}</p>
@@ -1189,18 +1650,277 @@ function EWalletCasePage({ onOpenContact, project }: { onOpenContact: () => void
         </div>
       </section>
 
-      <footer className="ewallet-footer">
-        <a
-          href={getProjectsHomePath()}
-          onClick={(event) => handleInternalRouteClick(event, getProjectsHomePath())}
-        >
-          Back to Projects
+        <EWalletImageLightbox image={previewImage} onClose={() => setPreviewImage(null)} />
+      </main>
+    </>
+  );
+}
+
+function DiscoverSectionHeading({
+  children,
+  eyebrow,
+  title,
+}: {
+  children: ReactNode;
+  eyebrow: string;
+  title: string;
+}) {
+  return (
+    <FadeIn className="discover-section-heading">
+      <p>{eyebrow}</p>
+      <h2>{title}</h2>
+      <div>{children}</div>
+    </FadeIn>
+  );
+}
+
+function DiscoverImageButton({
+  image,
+  label,
+  title,
+  onPreview,
+}: EWalletImagePreview & {
+  onPreview: (image: EWalletImagePreview) => void;
+}) {
+  return (
+    <button
+      type="button"
+      className="discover-image-button"
+      onClick={() => onPreview({ image, label, title, projectName: '易发现平台' })}
+      aria-label={`查看${title}完整图片`}
+    >
+      <img src={image} alt={`易发现平台 ${title}`} loading="lazy" />
+      {label ? <span>{label}</span> : null}
+    </button>
+  );
+}
+
+function DiscoverCaseNav() {
+  return (
+    <div className="discover-case-nav-wrap">
+      <nav className="discover-case-nav" aria-label="Case navigation">
+        <span className="discover-case-nav-brand">
+          <span aria-hidden="true" />
+          KUN Product Designer
+        </span>
+        <a href={getHomePath()} onClick={(event) => handleInternalRouteClick(event, getHomePath())}>
+          <ArrowLeft aria-hidden="true" size={18} strokeWidth={2.4} />
+          返回首页
         </a>
-        <button type="button" onClick={onOpenContact}>
-          Contact Me
-        </button>
-      </footer>
-    </main>
+      </nav>
+    </div>
+  );
+}
+
+function DiscoverCasePage({ project }: { project: Project }) {
+  const [previewImage, setPreviewImage] = useState<EWalletImagePreview | null>(null);
+
+  return (
+    <>
+      <DiscoverCaseNav />
+      <main className="discover-case-shell">
+        <section className="discover-hero" id="discover-top">
+          <div className="discover-hero-grid">
+            <FadeIn className="discover-hero-copy">
+              <p className="discover-kicker">Web Design / Enterprise Work Platform</p>
+              <h1>
+                易发现
+                <span>eFind</span>
+              </h1>
+              <p>
+                易发现是为企业员工打造的一站式工作平台，整合企业内部数据、场景和信息，统一功能入口、统一账户体系以及统一使用体验，为企业员工提升效能，降低学习成本。
+              </p>
+              <div className="discover-hero-meta" aria-label="Project facts">
+                <span>Role: {project.role}</span>
+                <span>Year: {project.year}</span>
+                <span>Scope: {project.scope.join(' / ')}</span>
+              </div>
+            </FadeIn>
+
+            <FadeIn className="discover-hero-visual" delay={0.08}>
+              <DiscoverImageButton
+                image={discoverPageUrls[0]}
+                label="Cover"
+                title="产品背景与封面"
+                onPreview={setPreviewImage}
+              />
+            </FadeIn>
+          </div>
+        </section>
+
+      <section className="discover-section discover-overview-section">
+        <DiscoverSectionHeading eyebrow="Project Background" title="产品背景与设计流程">
+          <p>
+            根据业务方需求，产品诉求被拆成两部分：打造专属品牌文化，并设计出流畅舒适的用户体验。改版围绕“分散、冗杂、无序”的旧状态，推进到“整合、独立、统一”的新体验。
+          </p>
+        </DiscoverSectionHeading>
+
+        <div className="discover-process-grid">
+          {discoverProcess.map((item, index) => (
+            <FadeIn className="discover-process-card" delay={index * 0.04} key={item.phase}>
+              <span>{item.phase}</span>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </FadeIn>
+          ))}
+        </div>
+      </section>
+
+      <section className="discover-section discover-research-section">
+        <DiscoverSectionHeading eyebrow="User Research" title="用户调研与问题定义">
+          <p>
+            前期通过客户访谈和问卷反馈，重点确认员工在多系统切换、信息查找、操作路径和旧版视觉上的主要阻力。
+          </p>
+        </DiscoverSectionHeading>
+
+        <div className="discover-research-grid">
+          <FadeIn className="discover-quote-panel">
+            <p className="discover-kicker">Feedback</p>
+            <h3>用户访问反馈</h3>
+            <ul>
+              {discoverUserQuotes.map((quote) => (
+                <li key={quote}>{quote}</li>
+              ))}
+            </ul>
+          </FadeIn>
+
+          <div className="discover-pain-grid">
+            {discoverPainPoints.map((item, index) => (
+              <FadeIn className="discover-pain-card" delay={index * 0.04} key={item.code}>
+                <span>{item.code}</span>
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="discover-section discover-goals-section">
+        <DiscoverSectionHeading eyebrow="Design Goals" title="设计目标">
+          <p>通过表现层、框架层和战略层三个目标，提升产品的视觉交互体验。</p>
+        </DiscoverSectionHeading>
+
+        <div className="discover-goal-grid">
+          {discoverGoals.map((goal, index) => (
+            <FadeIn className="discover-goal-card" delay={index * 0.04} key={goal.layer}>
+              <p>{goal.layer}</p>
+              <h3>{goal.title}</h3>
+              <ul>
+                {goal.points.map((point) => (
+                  <li key={point}>{point}</li>
+                ))}
+              </ul>
+            </FadeIn>
+          ))}
+        </div>
+      </section>
+
+      <section className="discover-section discover-system-section">
+        <DiscoverSectionHeading eyebrow="Design System" title="视觉规范与组件系统">
+          <p>
+            共搭建 50+ 组件集，可根据基础业务场景进行变体，同时支持一键切换深浅色模式，节约人力输出成本。
+          </p>
+        </DiscoverSectionHeading>
+
+        <div className="discover-system-grid">
+          <FadeIn className="discover-system-card discover-color-card">
+            <h3>颜色规范</h3>
+            <div>
+              {discoverColorTokens.map((item) => (
+                <article key={item.value}>
+                  <span style={{ background: item.color }} />
+                  <strong>{item.value}</strong>
+                  <p>{item.label}</p>
+                </article>
+              ))}
+            </div>
+          </FadeIn>
+
+          <FadeIn className="discover-system-card discover-type-card" delay={0.04}>
+            <h3>字体与基础规则</h3>
+            <article>
+              <span>中文 / 英文字体</span>
+              <strong>阿里巴巴普惠体 2.0</strong>
+            </article>
+            <article>
+              <span>数字字体</span>
+              <strong>DIN PRO 1234567890</strong>
+            </article>
+            <article>
+              <span>圆角与间距</span>
+              <strong>2px radius / 8px spacing base</strong>
+            </article>
+          </FadeIn>
+
+          <FadeIn className="discover-system-visual" delay={0.08}>
+            <DiscoverImageButton
+              image={discoverComponentSpecUrl}
+              title="组件库与设计规范"
+              onPreview={setPreviewImage}
+            />
+          </FadeIn>
+        </div>
+      </section>
+
+      <section className="discover-section discover-workbench-section">
+        <DiscoverSectionHeading eyebrow="Project Disassembly" title="工作台与组件拆解">
+          <p>
+            通过预设工作台、组件库和工作台组装能力，用户可以灵活组装个性化工作空间，持续概览、监控和预警工作内容。
+          </p>
+        </DiscoverSectionHeading>
+
+        <div className="discover-workbench-grid">
+          <FadeIn className="discover-workbench-panel">
+            <button
+              type="button"
+              className="discover-workbench-background-button"
+              onClick={() =>
+                setPreviewImage({
+                  image: discoverProjectDisassemblyUrl,
+                  title: '工作台与组件拆解',
+                  projectName: '易发现平台',
+                })
+              }
+              aria-label="查看工作台与组件拆解完整图片"
+            >
+              <img src={discoverProjectDisassemblyUrl} alt="易发现平台 工作台与组件拆解完整展示" loading="lazy" />
+            </button>
+            <div className="discover-workbench-copy discover-workbench-copy-overlay">
+              {discoverWorkbenchLayers.map((item) => (
+                <article key={item.title}>
+                  <h3>{item.title}</h3>
+                  <p>{item.body}</p>
+                </article>
+              ))}
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      <section className="discover-section discover-interface-section">
+        <DiscoverSectionHeading eyebrow="Interface Presentation" title="核心页面展示">
+          <p>
+            将 PDF 中的关键页面以可读网页卡片呈现。点击图片可打开完整大图，并支持放大查看。
+          </p>
+        </DiscoverSectionHeading>
+
+        <div className="discover-interface-grid">
+          {discoverInterfaces.map((item, index) => (
+            <FadeIn className="discover-interface-card" delay={(index % 3) * 0.04} key={item.title}>
+              <DiscoverImageButton {...item} onPreview={setPreviewImage} />
+              <div>
+                <p>{item.label}</p>
+                <h3>{item.title}</h3>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </section>
+
+      <EWalletImageLightbox image={previewImage} onClose={() => setPreviewImage(null)} />
+      </main>
+    </>
   );
 }
 
@@ -1232,7 +1952,11 @@ function useRouteLocation() {
 
 function ProjectDetailPage({ onOpenContact, project }: { onOpenContact: () => void; project: Project }) {
   if (project.slug === 'e-wallet-app') {
-    return <EWalletCasePage onOpenContact={onOpenContact} project={project} />;
+    return <EWalletCasePage project={project} />;
+  }
+
+  if (project.slug === 'yifaxian-platform') {
+    return <DiscoverCasePage project={project} />;
   }
 
   const isEfundProject = project.slug === 'efundgpt-app';
@@ -1306,7 +2030,7 @@ function ProjectDetailPage({ onOpenContact, project }: { onOpenContact: () => vo
         <FadeIn className="case-section-intro">
           <p className="case-detail-kicker">Selected Screens</p>
           <h2>Visual case gallery</h2>
-          <p>Full process copy will be added after the final case-study text is ready.</p>
+          <p>关键界面以完整页面形式呈现，方便查看启动页、首页结构和核心视觉细节。</p>
         </FadeIn>
 
         <div className="case-gallery-grid">

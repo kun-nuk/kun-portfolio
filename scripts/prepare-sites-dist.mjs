@@ -13,9 +13,14 @@ await mkdir(clientDir, { recursive: true });
 await mkdir(serverDir, { recursive: true });
 
 await cp(path.join(distDir, 'index.html'), path.join(clientDir, 'index.html'));
+await copyIfExists(
+  path.join(distDir, 'originkit-hero-02.html'),
+  path.join(clientDir, 'originkit-hero-02.html'),
+);
 await cp(path.join(distDir, 'assets'), path.join(clientDir, 'assets'), {
   recursive: true,
 });
+await copyIfExists(path.join(distDir, 'originkit'), path.join(clientDir, 'originkit'));
 await cp(path.join(rootDir, 'worker', 'index.js'), path.join(serverDir, 'index.js'));
 
 await mkdir(path.join(distDir, '.openai'), { recursive: true });
@@ -25,6 +30,16 @@ await cp(
 );
 
 await removeSystemFiles(distDir);
+
+async function copyIfExists(source, destination) {
+  try {
+    await cp(source, destination, { recursive: true });
+  } catch (error) {
+    if (error?.code !== 'ENOENT') {
+      throw error;
+    }
+  }
+}
 
 async function removeSystemFiles(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
